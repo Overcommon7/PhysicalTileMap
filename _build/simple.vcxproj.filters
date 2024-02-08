@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="Source\pch.cpp" />
+    <ClCompile Include="Source\Camera\Camera.cpp" />
+    <ClCompile Include="Source\ImGuiWindow\ITextureWindow.cpp" />
+    <ClCompile Include="Source\ImGuiWindow\IWindow.cpp" />
+    <ClCompile Include="Source\Editor\Editor.cpp" />
+    <ClCompile Include="Source\App\App.cpp" />
+    <ClCompile Include="Source\Editor\Windows\SceneView.cpp" />
+    <ClCompile Include="Source\Editor\Project\Project.cpp" />
+    <ClCompile Include="Source\Editor\Project\Tile.cpp" />
+    <ClCompile Include="Source\Editor\Windows\TileSelector.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\pch.h" />
+    <ClInclude Include="Source\Utilities\magic_enum.hpp" />
+    <ClInclude Include="Source\Utilities\Vector2Int.h" />
+    <ClInclude Include="Source\Camera\Camera.h" />
+    <ClInclude Include="Source\ImGuiWindow\ITextureWindow.h" />
+    <ClInclude Include="Source\ImGuiWindow\IWindow.h" />
+    <ClInclude Include="Source\Editor\Editor.h" />
+    <ClInclude Include="Source\App\App.h" />
+    <ClInclude Include="Source\Editor\Windows\SceneView.h" />
+    <ClInclude Include="Source\Utilities\GameTime.h" />
+    <ClInclude Include="Source\Editor\Project\Project.h" />
+    <ClInclude Include="Source\Editor\Project\Tile.h" />
+    <ClInclude Include="Source\Editor\Windows\TileSelector.h" />
+    <ClInclude Include="Source\Utilities\Action.h" />
+  </ItemGroup>
+</Project>
