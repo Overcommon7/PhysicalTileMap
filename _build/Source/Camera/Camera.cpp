@@ -58,6 +58,8 @@ namespace Render
 		if (resolution == GetResolution()) return;
 		UnloadRenderTexture(renderTexture);
 		renderTexture = LoadRenderTexture(resolution.x, resolution.y);
+		renderSize = resolution;
+		aspectRatio =  renderSize.x / renderSize.y;
 	}
 
 	Camera::Camera(Vector2 renderPosition, Vector2 virtualScreenSize)
@@ -91,7 +93,6 @@ namespace Render
 		camera.zoom = 1;
 		camera.offset = { };
 		renderTexture = LoadRenderTexture((int)renderSize.x, (int)renderSize.y);
-
 		aspectRatio = renderSize.x / renderSize.y;
 
 		if (center)

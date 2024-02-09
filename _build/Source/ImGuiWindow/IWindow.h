@@ -22,6 +22,7 @@ protected:
 	string_view displayTitle;
 	bool isClosable = false;
 	bool isClosed = false;
+	bool hasMenuBar = false;
 	Vector2Int windowPosition;
 	Vector2Int windowSize;
 

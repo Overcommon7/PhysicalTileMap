@@ -9,7 +9,7 @@ void Project::SetTile(Vector2Int position, const TileData& data)
 		SetWindowTitle((GetWindowTitle() + '*').c_str());
 	}
 		
-	tiles[position] = Tile(data);
+	tiles[position].SetData(data);
 }
 
 void Project::Draw(Vector2Int begin, Vector2Int end, const std::function<Vector2Int(Vector2Int)>& gridToScreen)

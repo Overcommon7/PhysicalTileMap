@@ -9,8 +9,9 @@ struct FileData;
 class TileSelector : public ITextureWindow
 {
 public:
-	ITextureWindowConstructor(TileSelector) {}
-
+	ITextureWindowConstructor(TileSelector) {
+		hasMenuBar = true;
+	}
 	void SetProject(Project* project);
 
 	const TileData& GetSelectedTileData() const;
@@ -24,8 +25,6 @@ private:
 	TileData currentTile;
 	Texture2D texture;
 	bool newDataSelected = false;
-	bool selectNewTile = false;
-	Vector2Int selectionPosition{};
 
 	void ImGuiDraw() override;
 	void RaylibDraw() override;
@@ -35,7 +34,6 @@ private:
 	void SelectNewTileData(Vector2Int imagePosition);
 
 	void DrawTabs();
-	void UpdateTileSelection();
 
 	Vector2Int ScreenToGrid(Vector2Int screenPosition);
 

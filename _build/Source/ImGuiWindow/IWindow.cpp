@@ -23,7 +23,11 @@ const char* IWindow::GetImGuiTitle() const
 
 void IWindow::ImGuiDrawBegin()
 {
-    ImGui::Begin(GetImGuiTitle(), isClosable ? &isClosed : nullptr);
+    if (hasMenuBar)
+        ImGui::Begin(GetImGuiTitle(), isClosable ? &isClosed : nullptr, ImGuiWindowFlags_MenuBar);
+    else
+        ImGui::Begin(GetImGuiTitle(), isClosable ? &isClosed : nullptr);
+
     windowPosition = ImGui::GetWindowPos();
     windowSize = ImGui::GetWindowSize();
 }

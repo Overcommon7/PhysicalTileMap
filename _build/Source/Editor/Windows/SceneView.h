@@ -8,14 +8,16 @@ class Project;
 class SceneView final : public ITextureWindow   
 {
 public:
-	ITextureWindowConstructor(SceneView) {}
+	ITextureWindowConstructor(SceneView) 
+	{
+		hasMenuBar = true;
+	}
 
 	void SetProject(Project* project);
 	void SetNewTileData(const TileData& data);
 private:
 	void RaylibDraw() override;
 	void ImGuiDraw() override;
-	void ImGuiDrawBegin() override;
 	void Update() override;
 
 

@@ -22,10 +22,19 @@ const TileData& TileSelector::GetSelectedTileData() const
 
 void TileSelector::ImGuiDraw()
 {
+	if (ImGui::BeginMenuBar())
+	{
+		if (ImGui::BeginMenu("Debug##1"))
+		{
+			ITextureWindow::DrawDebugMenuItems();
+			ImGui::EndMenu();
+		}
+		ImGui::EndMenuBar();
+	}
+
 	if (project == nullptr)
 		return;
 
-	UpdateTileSelection();
 	DrawTabs();
 }
 
@@ -38,21 +47,29 @@ void TileSelector::RaylibDraw()
 	Vector2Int position = Vector2Int(spacing, spacing);
 	const Vector2Int resolution(camera.GetResolution());
 
+	bool isInTexture = IsInsideTexture(::GetMousePosition());
+	bool mouseClicked = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
+	bool selectNewTile = isInTexture && mouseClicked;
+
 	for (int y = 0; y < texture.height; y += tileSize.y)
 	{
 		for (int x = 0; x < texture.width; x += tileSize.x)
 		{
 			Rectangle source(x, y, tileSize.x, tileSize.y);
 			DrawTextureRec(texture, source, position, WHITE);
+			bool isColliding = false;
 
-			if (selectNewTile)
+			Rectangle collider(position.x, position.y, tileSize.x, tileSize.y);
+			if (CheckCollisionPointRec(localMousePosition, collider))
 			{
-				Rectangle collider(position.x, position.y, tileSize.x, tileSize.y);
-				if (CheckCollisionPointRec(selectionPosition, collider))
-				{
-					Vector2Int imagePosition(x, y);
-					SelectNewTileData(imagePosition / tileSize);
-				}	
+				DrawRectangleRec(collider, { 120, 120, 120, 120 });
+				isColliding = true;
+			}
+
+			if (selectNewTile && isColliding)
+			{
+				Vector2Int imagePosition(x, y);
+				SelectNewTileData(imagePosition / tileSize);					
 			}
 				
 	
@@ -64,8 +81,6 @@ void TileSelector::RaylibDraw()
 			}
 		}
 	}
-
-	selectNewTile = false;
 }
 
 void TileSelector::Update()
@@ -107,8 +122,6 @@ void TileSelector::SelectNewTileData(Vector2Int imagePosition)
 {
 	currentTile.tint = WHITE;
 	currentTile.imagePosition = imagePosition;
-	
-	selectNewTile = false;
 	OnDataChanged.Invoke(currentTile);
 }
 
@@ -131,18 +144,4 @@ void TileSelector::DrawTabs()
 	}
 
 	ImGui::EndTabBar();
-}
-
-void TileSelector::UpdateTileSelection()
-{
-	if (!IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
-		return;
-
-	if (!IsInsideTexture(::GetMousePosition()))
-		return;
-
-	Vector2Int tileSize(project->GetTileSize());
-
-	selectionPosition = localMousePosition;
-	selectNewTile = true;
 }

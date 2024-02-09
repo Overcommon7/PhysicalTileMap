@@ -52,11 +52,6 @@ void SceneView::ImGuiDraw()
 	ITextureWindow::ImGuiDraw();
 }
 
-void SceneView::ImGuiDrawBegin()
-{
-	ImGui::Begin(GetImGuiTitle(),  isClosable ? &isClosed : nullptr, ImGuiWindowFlags_MenuBar);
-}
-
 void SceneView::Update()
 {
 	if (project == nullptr)
@@ -96,12 +91,12 @@ void SceneView::DrawGrid()
 	const Vector2Int tileSize(project->GetTileSize() + thickness);	
 	const Vector2Int dimensions(end - start + tileSize);
 
-	for (int x = start.x - (start.x % tileSize.x); x < end.x; x += tileSize.x)
+	for (int x = start.x - (start.x % tileSize.x) ; x < end.x; x += tileSize.x)
 	{
 		DrawRectangle(x, start.y, thickness, dimensions.y, settings.gridColor);
 	}
 
-	for (int y = start.y - (start.y % tileSize.y); y < end.y; y += tileSize.y)
+	for (int y = start.y - (start.y % tileSize.y) ; y < end.y; y += tileSize.y)
 	{
 		DrawRectangle(start.x, y, dimensions.x, thickness, settings.gridColor);
 	}

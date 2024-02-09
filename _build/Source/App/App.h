@@ -1,18 +1,23 @@
 #pragma once
-class Editor;
+#include "ILayer.h"
 
 class App
 {
 public:
 	App();
 	~App();
-
-	
 	bool Run();
-
+private:
+	enum class State
+	{
+		Editing = 0,
+		Gameplay
+	};
 private:
 	static inline bool isCreated = false;
-	Editor* editor;
+	vector<unique_ptr<ILayer>> layers;
 	bool shouldRestart = false;
+
+	State state;
 };
 

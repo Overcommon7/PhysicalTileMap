@@ -11,6 +11,12 @@ string Tile::GetSaveString(Vector2Int gridPosition)
 	return ss.str();
 }
 
+void Tile::SetData(const TileData& data)
+{
+	this->data = data;
+}
+
+
 Tile::Tile(const TileData& data)
     :data(data)
 {

@@ -2,6 +2,7 @@
 #include "App.h"
 
 #include "Editor/Editor.h"
+#include "Game/Game.h"
 
 App::App()
 {
@@ -24,12 +25,13 @@ App::App()
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	}
 
-	editor = new Editor();
+	layers.emplace_back(new Editor());
+	layers.emplace_back(new Game());
 }
 
 App::~App()
 {
-	delete editor;
+	layers.clear();
 
 	rlImGuiShutdown();
 	CloseWindow();
@@ -42,18 +44,19 @@ bool App::Run()
 	while (!WindowShouldClose())
 	{
 		Time::Update();
+		ILayer* currentLayer = layers[(int)state].get();
 
-		editor->Update();
+		currentLayer->Update();
 
 		BeginDrawing();
 		{
 			ClearBackground(BLACK);
-			editor->RaylibDraw();
+			currentLayer->RaylibDraw();
 
 			rlImGuiBegin();
 			{
 				ImGui::DockSpaceOverViewport();
-				editor->ImGuiDraw();			
+				currentLayer->ImGuiDraw();			
 			}
 			rlImGuiEnd();
 		}

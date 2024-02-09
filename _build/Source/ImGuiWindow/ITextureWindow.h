@@ -35,5 +35,5 @@ private:
 };
 
 #define ITextureWindowConstructor(className) className(const string& windowTitle, Vector2Int cameraResolution) : ITextureWindow(windowTitle, cameraResolution)
-
+#define ITextureWindowConstructorHeader(className) className(const string& windowTitle, Vector2Int cameraResolution)
 

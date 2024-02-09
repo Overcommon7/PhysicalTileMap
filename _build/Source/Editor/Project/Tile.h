@@ -15,11 +15,12 @@ class Tile
 public:
 	const TileData& GetData() const { return data; }
 	string GetSaveString(Vector2Int gridPosition);
+	void SetData(const TileData& data);
+
 	Tile(const TileData& data);
 	Tile() = default;
 private:
 	TileData data;
-
 	int ColorToInt(Color color);
 };
 

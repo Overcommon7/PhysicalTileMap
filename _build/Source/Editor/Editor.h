@@ -1,25 +1,20 @@
 #pragma once
-#include "ImGuiWindow/IWindow.h"
+#include "App/ILayer.h"
 #include "Project/Project.h"
 
 class SceneView;
 class TileSelector;
 
-class Editor
+class Editor : public ILayer
 {
 public:
 	Editor();
 	~Editor();
-
-	void Update();
-	void RaylibDraw();
-	void ImGuiDraw();
-
-	vector<unique_ptr<IWindow>> windows;
-	unique_ptr<Project> currentProject;
 private:
 	
 	SceneView* sceneView;
 	TileSelector* tileSelector;
+
+	unique_ptr<Project> currentProject;
 };
 

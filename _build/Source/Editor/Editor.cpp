@@ -26,37 +26,5 @@ Editor::Editor()
 
 Editor::~Editor()
 {
-	for (const auto& window : windows)
-		window->Terminate();
-
 	FileData::Terminate();
-}
-
-void Editor::Update()
-{
-	for (auto& window : windows)
-		window->Update();
-}
-
-void Editor::RaylibDraw()
-{
-	for (const auto& window : windows)
-	{
-		ITextureWindow* textureWindow = dynamic_cast<ITextureWindow*>(window.get());
-		if (!textureWindow)	continue;
-
-		textureWindow->BeginDraw();
-		textureWindow->EndDraw();
-	}
-		
-}
-
-void Editor::ImGuiDraw()
-{
-	for (const auto& window : windows)
-	{
-		window->ImGuiDrawBegin();
-		window->ImGuiDraw();
-		window->ImGuiDrawEnd();
-	}
 }
