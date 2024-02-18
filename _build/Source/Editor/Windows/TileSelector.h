@@ -16,8 +16,8 @@ public:
 
 	const TileData& GetSelectedTileData() const;
 	bool IsNewDataSelected() const { return newDataSelected; }
-	void SelectNewTileData(Vector2Int imagePosition);
-	void SelectNewFileData(const FileData* data);
+	
+	void SelectNewTile(const TileData& data);
 
 	Action<TileData> OnDataChanged;
 private:
@@ -27,13 +27,14 @@ private:
 	TileData currentTile;
 	Texture2D texture;
 	bool newDataSelected = false;
+	bool newTileSelected = false;
 
 	void ImGuiDraw() override;
 	void RaylibDraw() override;
 	void Update() override;
 
-	
-	
+	void SelectNewTileData(Vector2Int imagePosition);
+	void SelectNewFileData(const FileData* data);
 
 	void DrawTabs();
 

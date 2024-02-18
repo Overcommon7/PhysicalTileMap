@@ -20,6 +20,24 @@ const TileData& TileSelector::GetSelectedTileData() const
 	return currentTile;
 }
 
+void TileSelector::SelectNewTile(const TileData& data)
+{
+	auto it = std::find_if(fileData.begin(), fileData.end(), [&data](const FileData* fData) {
+		return fData->hash == data.pathHash;
+		});
+
+	if (it == fileData.end())
+		return;
+
+	texture = (*it)->texture;
+	currentTile = data;
+	
+	newTileSelected = true;
+	newDataSelected = true;
+
+	OnDataChanged.Invoke(currentTile);
+}
+
 void TileSelector::ImGuiDraw()
 {
 	if (ImGui::BeginMenuBar())
@@ -131,18 +149,33 @@ void TileSelector::DrawTabs()
 	if (!ImGui::BeginTabBar("Tile Images"))
 		return;
 
+		
+
 	for (const auto& data : fileData)
 	{
-		if (!ImGui::BeginTabItem(data->name.c_str())) continue;
-
-		if (data->hash != currentTile.pathHash)
+		if (newTileSelected)
 		{
-			SelectNewFileData(data);
+			bool isOpen = data->hash == currentTile.pathHash;
+			if (!ImGui::BeginTabItem(data->name.c_str(), &isOpen))
+				continue;
+			
+			ITextureWindow::ImGuiDraw();
+			ImGui::EndTabItem();
 		}
+		else
+		{
+			if (!ImGui::BeginTabItem(data->name.c_str())) continue;
 
-		ITextureWindow::ImGuiDraw();
-		ImGui::EndTabItem();
+			if (data->hash != currentTile.pathHash)
+			{
+				SelectNewFileData(data);
+			}
+
+			ITextureWindow::ImGuiDraw();
+			ImGui::EndTabItem();
+		}	
 	}
 
+	newTileSelected = false;
 	ImGui::EndTabBar();
 }

@@ -62,7 +62,7 @@ void SceneView::ImGuiDraw()
 
 	UpdateCamera();
 
-	if (!imGuiValues.isHoveringMenu || editorValues.eyeDropper.IsActive())
+	if (!imGuiValues.isHoveringMenu && !editorValues.eyeDropper.IsActive())
 		UpdateProject();
 
 	UpdateInputs();

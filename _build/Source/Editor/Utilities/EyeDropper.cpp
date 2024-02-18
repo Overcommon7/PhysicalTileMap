@@ -6,17 +6,10 @@
 
 void EyeDropper::Select(Project* project, TileSelector* tileSelector, Vector2Int mouseGridPosition)
 {
-	auto tile = project->GetTile(mouseGridPosition);
-	if (tile.has_value())
+	auto tileData = project->GetTile(mouseGridPosition);
+	if (tileData)
 	{	
-		auto files = project->GetFileData();
-		size_t pathHash = tile->pathHash;
-		auto it = std::find_if(files.begin(), files.end(), [pathHash](const FileData* data) {
-			return data->hash == pathHash;
-			});
-
-		tileSelector->SelectNewFileData(*it);
-		tileSelector->SelectNewTileData(tile->imagePosition);
+		tileSelector->SelectNewTile(*tileData);
 	}
 
 	Cancel();

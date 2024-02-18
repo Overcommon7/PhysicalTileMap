@@ -5,6 +5,9 @@ struct TileData
 	TileData(Vector2Int imagePosition, size_t pathHash, Color tint)
 		: imagePosition(imagePosition), pathHash(pathHash), tint(tint) {}
 
+	TileData(const TileData& data)
+		: TileData(data.imagePosition, data.pathHash, data.tint) {}
+
 	Color tint = WHITE;
 	Vector2Int imagePosition{};
 	size_t pathHash{};
