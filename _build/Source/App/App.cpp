@@ -25,12 +25,15 @@ App::App()
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	}
 
-	layers.emplace_back(new Editor());
-	layers.emplace_back(new Game());
+	layers.emplace_back(new Editor())->Initialize();
+	layers.emplace_back(new Game())->Initialize();
 }
 
 App::~App()
 {
+	for (const auto& layer : layers)
+		layer->Shutdown();
+
 	layers.clear();
 
 	rlImGuiShutdown();

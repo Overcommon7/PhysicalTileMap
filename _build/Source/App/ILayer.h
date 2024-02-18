@@ -6,8 +6,10 @@ class ILayer
 {
 public:
 	ILayer() = default;
-	virtual ~ILayer();
+	virtual ~ILayer() = default;
 
+	virtual void Initialize();
+	virtual void Shutdown();
 	virtual void Update();
 	virtual void RaylibDraw();
 	virtual void ImGuiDraw();

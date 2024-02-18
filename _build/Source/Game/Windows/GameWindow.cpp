@@ -44,7 +44,7 @@ void GameWindow::ImGuiDraw()
 	ITextureWindow::ImGuiDraw();
 }
 
-Vector2Int GameWindow::ScreenToGrid(Vector2Int screenPosition)
+Vector2Int GameWindow::ScreenToGrid(Vector2Int screenPosition) const
 {
 	const Vector2Int tileSize(project->GetTileSize());
 
@@ -56,7 +56,7 @@ Vector2Int GameWindow::ScreenToGrid(Vector2Int screenPosition)
 	return Vector2Divide(screenPosition, tileSize);
 }
 
-Vector2Int GameWindow::GridToScreen(Vector2Int gridPosition)
+Vector2Int GameWindow::GridToScreen(Vector2Int gridPosition) const
 {
 	if (project == nullptr)
 		return Vector2Int();

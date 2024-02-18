@@ -19,9 +19,9 @@ public:
     void SetTintColor(Color color) { camera.SetTintColor(color); }
 
     Render::Camera& GetCamera() { return camera; }
-    Vector2Int GetMousePosition();
-    Vector2Int GetTexturePoint(Vector2Int point);
-    bool IsInsideTexture(Vector2Int point);
+    Vector2Int GetMousePosition() const;
+    Vector2Int GetTexturePoint(Vector2Int point) const ;
+    bool IsInsideTexture(Vector2Int point) const;
 protected:
     ITextureWindow(const string& title, Vector2Int cameraResolution);
 

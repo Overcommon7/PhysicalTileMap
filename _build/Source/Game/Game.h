@@ -5,7 +5,7 @@
 class Game : public ILayer
 {
 public:
-
+	
 private:
 	unique_ptr<GameWindow> game;
 };

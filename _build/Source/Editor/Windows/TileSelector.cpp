@@ -114,6 +114,7 @@ void TileSelector::SelectNewFileData(const FileData* data)
 	currentTile.tint = WHITE;
 
 	texture = data->texture;
+	newDataSelected = true;
 
 	OnDataChanged.Invoke(currentTile);
 }

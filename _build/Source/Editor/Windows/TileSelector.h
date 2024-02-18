@@ -35,7 +35,7 @@ private:
 
 	void DrawTabs();
 
-	Vector2Int ScreenToGrid(Vector2Int screenPosition);
+	Vector2Int ScreenToGrid(Vector2Int screenPosition) const;
 
 	const int spacing = 2;
 };

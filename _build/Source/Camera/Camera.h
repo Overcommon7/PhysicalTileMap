@@ -30,7 +30,7 @@ namespace Render
 		void UpdateZoom(float zoom) { camera.zoom += zoom; }
 		bool IsMouseWithinBounds();
 
-		Vector2Int TransformPoint(Vector2Int position);
+		Vector2Int TransformPoint(Vector2Int position) const;
 		void SetActive(bool active) { isActive = active; }
 
 		const int GetID() const { return id; }

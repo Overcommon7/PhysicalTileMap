@@ -18,6 +18,7 @@
     <ClCompile Include="Source\Game\Player\InputHandling.cpp" />
     <ClCompile Include="Source\Game\Game.cpp" />
     <ClCompile Include="Source\App\ILayer.cpp" />
+    <ClCompile Include="Source\Editor\Utilities\Selection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\pch.h" />
@@ -40,5 +41,6 @@
     <ClInclude Include="Source\Game\Player\InputHandling.h" />
     <ClInclude Include="Source\Game\Game.h" />
     <ClInclude Include="Source\App\ILayer.h" />
+    <ClInclude Include="Source\Editor\Utilities\Selection.h" />
   </ItemGroup>
 </Project>

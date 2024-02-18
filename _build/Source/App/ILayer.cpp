@@ -3,7 +3,13 @@
 
 #include "ImGuiWindow/ITextureWindow.h"
 
-ILayer::~ILayer()
+void ILayer::Initialize()
+{
+	for (const auto& window : windows)
+		window->Initialize();
+}
+
+void ILayer::Shutdown()
 {
 	for (const auto& window : windows)
 		window->Terminate();

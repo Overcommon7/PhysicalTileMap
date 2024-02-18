@@ -2,7 +2,6 @@
 #include "Tile.h"
 
 class SceneView;
-struct TileData;
 
 struct FileData
 {
@@ -26,6 +25,7 @@ public:
 	Vector2Int GetTileSize() const { return tileSize; }
 
 	void SetTile(Vector2Int position, const TileData& data);
+	void RemoveTile(Vector2Int position);
 	void Draw(Vector2Int begin, Vector2Int end, const std::function<Vector2Int(Vector2Int)>& gridToScreen);
 
 	vector<const FileData*> GetFileData() const;

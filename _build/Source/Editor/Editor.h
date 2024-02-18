@@ -10,6 +10,8 @@ class Editor : public ILayer
 public:
 	Editor();
 	~Editor();
+
+	const TileSelector* const GetTileSelector() const { return tileSelector; }
 private:
 	
 	SceneView* sceneView;

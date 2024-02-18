@@ -209,7 +209,7 @@ namespace Render
 		return CheckCollisionPointRec(::GetMousePosition(), rectangle);
 	}
 
-	Vector2Int Camera::TransformPoint(Vector2Int position)
+	Vector2Int Camera::TransformPoint(Vector2Int position) const
 	{
 		Vector2 point = Vector2Subtract(position, renderPosition);
 		point = GetScreenToWorld2D(point, camera);

@@ -32,12 +32,12 @@ void ITextureWindow::DrawDebugMenuItems()
 	ImGui::Text("Is Within Texture: %s", IsInsideTexture(mousePosition) ? "true" : "false");
 }
 
-Vector2Int ITextureWindow::GetMousePosition()
+Vector2Int ITextureWindow::GetMousePosition() const
 {
 	return localMousePosition;
 }
 
-Vector2Int ITextureWindow::GetTexturePoint(Vector2Int point)
+Vector2Int ITextureWindow::GetTexturePoint(Vector2Int point) const
 {	
 	Vector2Int position = point - texturePosition;
 	Vector2 ratio = Vector2Divide(camera.GetResolution(), textureSize);
@@ -45,7 +45,7 @@ Vector2Int ITextureWindow::GetTexturePoint(Vector2Int point)
 	return camera.TransformPoint(cameraPosition);
 }
 
-bool ITextureWindow::IsInsideTexture(Vector2Int point)
+bool ITextureWindow::IsInsideTexture(Vector2Int point) const
 {
 	Rectangle rectangle(texturePosition.x, texturePosition.y, textureSize.x, textureSize.y);
 	return CheckCollisionPointRec(point, rectangle);

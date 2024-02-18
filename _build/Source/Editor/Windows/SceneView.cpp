@@ -2,6 +2,7 @@
 #include "SceneView.h"
 
 #include "../Project/Project.h"
+#include "TileSelector.h"
 
 void SceneView::SetProject(Project* project)
 {
@@ -12,6 +13,22 @@ void SceneView::SetProject(Project* project)
 void SceneView::SetNewTileData(const TileData& data)
 {
 	currentTileData = data;
+	editorValues.selection.OnNewDataSelected(project, data);
+}
+
+void SceneView::SetTileSelector(TileSelector* const tileSelector)
+{
+	this->tileSelector = tileSelector;
+}
+
+void SceneView::Initialize()
+{
+	auto GridToScreen = [this](Vector2Int grid) -> Vector2Int
+		{
+			return this->GridToScreen(grid);
+		};
+
+	gridToScreen = GridToScreen;
 }
 
 void SceneView::RaylibDraw()
@@ -19,15 +36,12 @@ void SceneView::RaylibDraw()
 	if (project == nullptr)
 		return;
 
-	auto GridToScreen = [this](Vector2Int grid) -> Vector2Int
-		{
-			return this->GridToScreen(grid);
-		};
-
 	if (settings.showGrid)
 		DrawGrid();
 
-	project->Draw(ScreenToGrid(start, true), ScreenToGrid(end, true), GridToScreen);
+	
+	project->Draw(ScreenToGrid(start, true), ScreenToGrid(end, true), gridToScreen);
+	editorValues.selection.RaylibDraw(this);
 }
 
 void SceneView::ImGuiDraw()
@@ -45,10 +59,12 @@ void SceneView::ImGuiDraw()
 		return;
 
 	UpdateCamera();
+	UpdateInputs();
 
 	if (!imGuiValues.isHoveringMenu)
 		UpdateProject();
-	
+
+	editorValues.selection.Update(this, tileSelector);
 	ITextureWindow::ImGuiDraw();
 }
 
@@ -58,6 +74,22 @@ void SceneView::Update()
 		return;
 
 	UpdateStartAndEnd();
+}
+
+void SceneView::UpdateInputs()
+{
+	if (ImGui::IsKeyPressed(ImGuiKey_I))
+		editorValues.usingEyeDropper = true;
+
+	if (ImGui::IsKeyPressed(ImGuiKey_Escape))
+	{
+		editorValues.usingEyeDropper = false;
+		editorValues.selection.CancelSelection();
+	}
+
+	
+		
+	
 }
 
 void SceneView::UpdateCamera()
@@ -116,10 +148,32 @@ void SceneView::UpdateStartAndEnd()
 
 void SceneView::UpdateProject()
 {	
-	if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && IsInsideTexture(::GetMousePosition()))
+	if (ImGui::IsKeyDown(ImGuiKey_LeftShift))
+		return;
+
+
+
+	bool left = ImGui::IsMouseDown(ImGuiMouseButton_Left);
+	bool right = ImGui::IsMouseDown(ImGuiMouseButton_Right);
+
+	if ((left || right) && IsInsideTexture(::GetMousePosition()))
 	{	
 		Vector2Int gridPosition(ScreenToGrid(this->GetMousePosition(), true));
-		project->SetTile(gridPosition, currentTileData);
+		if (left && !editorValues.selection.HasSelection())
+			project->SetTile(gridPosition, currentTileData);
+		else if (right)
+		{
+			if (editorValues.selection.HasSelection())
+			{
+				editorValues.selection.DeleteTilesFromSelection(project);
+				editorValues.selection.CancelSelection();
+			}	
+			else
+			{
+				project->RemoveTile(gridPosition);
+			}
+		}
+			
 	}
 }
 

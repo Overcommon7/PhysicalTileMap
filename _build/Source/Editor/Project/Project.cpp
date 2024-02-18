@@ -12,6 +12,11 @@ void Project::SetTile(Vector2Int position, const TileData& data)
 	tiles[position].SetData(data);
 }
 
+void Project::RemoveTile(Vector2Int position)
+{
+	tiles.erase(position);
+}
+
 void Project::Draw(Vector2Int begin, Vector2Int end, const std::function<Vector2Int(Vector2Int)>& gridToScreen)
 {
 	const auto endIter = tiles.end();
