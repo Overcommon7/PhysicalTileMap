@@ -4,6 +4,7 @@
 #include "../Project/Project.h"
 #include "TileSelector.h"
 
+
 void SceneView::SetProject(Project* project)
 {
 	this->project = project;
@@ -50,6 +51,7 @@ void SceneView::ImGuiDraw()
 	{
 		imGuiValues.isHoveringMenu = false;
 		DrawFileMenu();
+		DrawEditMenu();
 		DrawSettingsMenuItem();
 		DrawDebugMenuItem();
 		ImGui::EndMenuBar();
@@ -59,12 +61,11 @@ void SceneView::ImGuiDraw()
 		return;
 
 	UpdateCamera();
-	UpdateInputs();
 
-	if (!imGuiValues.isHoveringMenu)
+	if (!imGuiValues.isHoveringMenu || editorValues.eyeDropper.IsActive())
 		UpdateProject();
 
-	editorValues.selection.Update(this, tileSelector);
+	UpdateInputs();
 	ITextureWindow::ImGuiDraw();
 }
 
@@ -78,18 +79,11 @@ void SceneView::Update()
 
 void SceneView::UpdateInputs()
 {
-	if (ImGui::IsKeyPressed(ImGuiKey_I))
-		editorValues.usingEyeDropper = true;
+	editorValues.selection.Update(this, tileSelector);
+	editorValues.eyeDropper.Update();
 
-	if (ImGui::IsKeyPressed(ImGuiKey_Escape))
-	{
-		editorValues.usingEyeDropper = false;
-		editorValues.selection.CancelSelection();
-	}
-
-	
-		
-	
+	if (editorValues.eyeDropper.IsActive() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+		editorValues.eyeDropper.Select(project, tileSelector, ScreenToGrid(this->GetMousePosition(), true));
 }
 
 void SceneView::UpdateCamera()
@@ -226,12 +220,34 @@ void SceneView::DrawFileMenu()
 			imGuiValues.isHoveringMenu = true;
 
 		if (ImGui::Button("Save"))
-		{
 			project->Save();
+
+		if (ImGui::Button("Save As"))
+		{
+			project->SaveAs("");
 		}
+			
 
 		ImGui::EndMenu();
 	}
+}
+
+void SceneView::DrawEditMenu()
+{
+	if (!ImGui::BeginMenu("Edit"))
+		return;
+
+	if (ImGui::IsItemHovered())
+		imGuiValues.isHoveringMenu = true;
+
+	if (ImGui::Button("Clear"))
+		project->Clear();
+
+	if (ImGui::Button("Eye Dropper"))
+		editorValues.eyeDropper.Activate();
+
+	ImGui::EndMenu();
+
 }
 
 Vector2Int SceneView::ScreenToGrid(Vector2Int screenPosition, bool isTexturePosition)

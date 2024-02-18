@@ -1,7 +1,10 @@
 #pragma once
 #include "ImGuiWindow/ITextureWindow.h"
-#include "../Project/Tile.h"
+#include "Editor/Project/Tile.h"
+
 #include "Editor/Utilities/Selection.h"
+#include "Editor/Utilities/EyeDropper.h"
+
 
 class Project;
 class TileSelector;
@@ -33,6 +36,7 @@ private:
 	void DrawSettingsMenuItem();
 	void DrawDebugMenuItem();
 	void DrawFileMenu();
+	void DrawEditMenu();
 
 
 	Vector2Int ScreenToGrid(Vector2Int screenPosition, bool isTexturePosition = false);
@@ -51,7 +55,7 @@ private:
 
 	struct EditorValues
 	{
-		bool usingEyeDropper = false;
+		EyeDropper eyeDropper;
 		Selection selection;
 	};
 
@@ -60,6 +64,7 @@ private:
 		bool isHoveringMenu = false;
 	};
 private:
+
 	Settings settings;
 	ImGuiValues imGuiValues;
 	EditorValues editorValues;
@@ -67,7 +72,7 @@ private:
 	Vector2Int start;
 	Vector2Int end;
 	TileData currentTileData;
-	const TileSelector* tileSelector;
+	TileSelector* tileSelector;
 	std::function<Vector2Int(Vector2Int)> gridToScreen;
 
 	friend class Selection;

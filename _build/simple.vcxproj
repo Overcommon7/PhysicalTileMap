@@ -104,6 +104,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Editor\Utilities\EyeDropper.cpp" />
     <ClCompile Include="Source\Editor\Utilities\Selection.cpp" />
     <ClCompile Include="Source\App\ILayer.cpp" />
     <ClCompile Include="Source\Game\Game.cpp" />
@@ -129,6 +130,7 @@
     <ClCompile Include="Source\Editor\Windows\TileSelector.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Editor\Utilities\EyeDropper.h" />
     <ClInclude Include="Source\Editor\Utilities\Selection.h" />
     <ClInclude Include="Source\App\ILayer.h" />
     <ClInclude Include="Source\Game\Game.h" />

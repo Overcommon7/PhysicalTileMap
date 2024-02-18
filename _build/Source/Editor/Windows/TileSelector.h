@@ -16,6 +16,8 @@ public:
 
 	const TileData& GetSelectedTileData() const;
 	bool IsNewDataSelected() const { return newDataSelected; }
+	void SelectNewTileData(Vector2Int imagePosition);
+	void SelectNewFileData(const FileData* data);
 
 	Action<TileData> OnDataChanged;
 private:
@@ -30,8 +32,8 @@ private:
 	void RaylibDraw() override;
 	void Update() override;
 
-	void SelectNewFileData(const FileData* data);
-	void SelectNewTileData(Vector2Int imagePosition);
+	
+	
 
 	void DrawTabs();
 

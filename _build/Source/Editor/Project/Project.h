@@ -32,6 +32,9 @@ public:
 	Project(const fs::path& projectFile);
 	void Save();
 	void SaveAs(const fs::path& path);
+	void Clear() { tiles.clear(); }
+
+	std::optional<TileData> GetTile(Vector2Int gridPosition) const;
 
 	string GetWindowTitle() const { return "OverTiled - " + projectFile.stem().string(); }
 private:

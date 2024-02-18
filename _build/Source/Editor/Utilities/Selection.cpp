@@ -44,6 +44,9 @@ void Selection::UpdateEndPoint(Vector2Int endPoint)
 
 void Selection::Update(SceneView* const sceneView, const TileSelector* const tileSelector)
 {
+	if (ImGui::IsKeyPressed(ImGuiKey_Escape))
+		CancelSelection();
+
 	if (ImGui::IsKeyDown(ImGuiKey_LeftShift))
 	{
 		if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))

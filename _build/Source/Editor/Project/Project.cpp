@@ -102,8 +102,18 @@ void Project::SaveAs(const fs::path& path)
 	}
 
 	inFile.close();
+	isSaved = true;
+	projectFile = path;
 
 	SetWindowTitle(GetWindowTitle().c_str());
+}
+
+std::optional<TileData> Project::GetTile(Vector2Int gridPosition) const
+{
+	if (tiles.contains(gridPosition))
+		return tiles.at(gridPosition).GetData();
+
+	return std::nullopt;
 }
 
 void Project::LoadTilesFromFile(size_t hashValue, fstream& inFile)
