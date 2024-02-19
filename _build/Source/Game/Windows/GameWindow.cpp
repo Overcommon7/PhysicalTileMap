@@ -4,10 +4,12 @@
 #include "../Player/Player.h"
 #include "../../Editor/Project/Project.h"
 
+#include "App/App.h"
+
 GameWindow::ITextureWindowConstructor(GameWindow)
 	, player(nullptr)
 {
-    
+	hasMenuBar = true;
 }
 
 void GameWindow::Start(Project* project)
@@ -41,6 +43,23 @@ void GameWindow::RaylibDraw()
 
 void GameWindow::ImGuiDraw()
 {
+	if (ImGui::BeginMenuBar())
+	{
+		if (ImGui::BeginMenu("Edit"))
+		{
+			if (ImGui::Button("Edit Mode"))
+			{
+				App::ChangeState(App::State::Editing);
+			}
+			if (ImGui::Button("Quit"))
+				App::Close();
+
+			ImGui::EndMenu();
+		}
+		ImGui::EndMenuBar();
+	}
+
+
 	ITextureWindow::ImGuiDraw();
 }
 

@@ -18,5 +18,7 @@ private:
 	TileSelector* tileSelector;
 
 	unique_ptr<Project> currentProject;
+
+	friend class App;
 };
 

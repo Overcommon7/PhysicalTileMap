@@ -3,6 +3,7 @@
 
 #include "../Project/Project.h"
 #include "TileSelector.h"
+#include "App/App.h"
 
 
 void SceneView::SetProject(Project* project)
@@ -224,9 +225,13 @@ void SceneView::DrawFileMenu()
 
 		if (ImGui::Button("Save As"))
 		{
-			project->SaveAs("");
+			auto path = project->GetSavePath();
+			path = path.relative_path() / (path.stem().string() + "Copy.png");
+			project->SaveAs(path);
 		}
-			
+		
+		if (ImGui::Button("Quit"))
+			App::Close();
 
 		ImGui::EndMenu();
 	}
@@ -245,6 +250,9 @@ void SceneView::DrawEditMenu()
 
 	if (ImGui::Button("Eye Dropper"))
 		editorValues.eyeDropper.Activate();
+
+	if (ImGui::Button("Play"))
+		App::ChangeState(App::State::Gameplay);
 
 	ImGui::EndMenu();
 

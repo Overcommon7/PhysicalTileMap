@@ -5,9 +5,13 @@
 #include "Game/Game.h"
 
 App::App()
+	: queriedStateChange(std::nullopt)
+	, state(State::Editing)
+	, shouldClose(false)
 {
 	assert(!isCreated);
 	isCreated = true;
+	instance = this;
 
 	{
 		constexpr int screenWidth = 1280;
@@ -25,8 +29,11 @@ App::App()
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	}
 
-	layers.emplace_back(new Editor())->Initialize();
-	layers.emplace_back(new Game())->Initialize();
+	editor = new Editor();
+	game = new Game();
+
+	layers.emplace_back(editor)->Initialize();
+	layers.emplace_back(game)->Initialize();
 }
 
 App::~App()
@@ -40,12 +47,19 @@ App::~App()
 	CloseWindow();
 
 	isCreated = false;
+	instance = nullptr;
 }
 
-bool App::Run()
+void App::Run()
 {
-	while (!WindowShouldClose())
+	while (!WindowShouldClose() && !shouldClose)
 	{
+		if (queriedStateChange)
+		{
+			state = *queriedStateChange;
+			queriedStateChange = std::nullopt;
+		}
+
 		Time::Update();
 		ILayer* currentLayer = layers[(int)state].get();
 
@@ -63,8 +77,25 @@ bool App::Run()
 			}
 			rlImGuiEnd();
 		}
-		EndDrawing();		
+		EndDrawing();
 	}
+}
 
-	return !shouldRestart;
+void App::ChangeState(State state)
+{
+	instance->queriedStateChange = state;
+
+	if (state == State::Gameplay)
+	{
+		instance->game->OnStart(instance->editor->currentProject.get());
+	}
+	else if (state == State::Editing)
+	{
+		instance->game->Stop();
+	}
+}
+
+void App::Close()
+{
+	instance->shouldClose = true;
 }

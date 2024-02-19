@@ -36,6 +36,7 @@ public:
 
 	std::optional<TileData> GetTile(Vector2Int gridPosition) const;
 
+	const fs::path& GetSavePath() const { return projectFile; }
 	string GetWindowTitle() const { return "OverTiled - " + projectFile.stem().string(); }
 private:
 		

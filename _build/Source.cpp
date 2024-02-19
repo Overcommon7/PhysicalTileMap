@@ -3,7 +3,7 @@
 
 int main(int argc, char* argv[])
 {
-	while (!App().Run());
+	App().Run();
 
 	return 0;
 }

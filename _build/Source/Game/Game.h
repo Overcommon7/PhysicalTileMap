@@ -1,12 +1,15 @@
 #pragma once
 #include "App/ILayer.h"
-#include "Windows/GameWindow.h"
+class GameWindow;
+class Project;
 
 class Game : public ILayer
 {
 public:
-	
+	Game();
+	void OnStart(Project* project);
+	void Stop();
 private:
-	unique_ptr<GameWindow> game;
+	GameWindow* game;
 };
 
