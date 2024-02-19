@@ -44,6 +44,9 @@ void SceneView::RaylibDraw()
 	
 	project->Draw(ScreenToGrid(start, true), ScreenToGrid(end, true), gridToScreen);
 	editorValues.selection.RaylibDraw(this);
+	DrawMiniTile();
+
+	
 }
 
 void SceneView::ImGuiDraw()
@@ -256,6 +259,20 @@ void SceneView::DrawEditMenu()
 
 	ImGui::EndMenu();
 
+}
+
+void SceneView::DrawMiniTile()
+{
+	const auto& texture = tileSelector->GetCurrentTexture();
+	const auto position(this->GetMousePosition());
+	const auto tileSize(project->GetTileSize());
+	const auto texturePosition = currentTileData.imagePosition * tileSize;
+
+	const Rectangle source(texturePosition.x, texturePosition.y, tileSize.x, tileSize.y);
+	const Rectangle dest(position.x - 15.f, position.y - 15.f, 25.f, 25.f);
+	const Vector2 origin = { 0.0f, 0.0f };
+
+	DrawTexturePro(texture, source, dest, origin, 0.f, currentTileData.tint);
 }
 
 Vector2Int SceneView::ScreenToGrid(Vector2Int screenPosition, bool isTexturePosition)

@@ -38,6 +38,11 @@ void TileSelector::SelectNewTile(const TileData& data)
 	OnDataChanged.Invoke(currentTile);
 }
 
+const Texture2D& TileSelector::GetCurrentTexture()
+{
+	return texture;
+}
+
 void TileSelector::ImGuiDraw()
 {
 	if (ImGui::BeginMenuBar())
@@ -61,6 +66,36 @@ void TileSelector::RaylibDraw()
 	if (project == nullptr)
 		return;
 
+	DrawProject();
+	DrawMiniTile();
+}
+
+void TileSelector::Update()
+{
+	if (project == nullptr)
+		return;
+
+	const Vector2Int resolution(camera.GetResolution());
+	Vector2Int size(windowSize);
+	size.x *= 0.9f;
+	size.y *= 0.9f;
+
+	if (size.x >= resolution.x * 1.50f ||
+		size.y >= resolution.y * 1.50f || 
+		size.x <= resolution.x * 0.75f || 
+		size.y <= resolution.y * 0.75f)
+	{
+		const Vector2Int tileSize(project->GetTileSize());
+		size.x -= size.x % tileSize.x;
+		size.x -= size.y % tileSize.y;
+		camera.SetResolution(size);
+	}
+
+	newDataSelected = false;
+}
+
+void TileSelector::DrawProject()
+{
 	const Vector2Int tileSize = project->GetTileSize();
 	Vector2Int position = Vector2Int(spacing, spacing);
 	const Vector2Int resolution(camera.GetResolution());
@@ -89,8 +124,8 @@ void TileSelector::RaylibDraw()
 				Vector2Int imagePosition(x, y);
 				SelectNewTileData(imagePosition / tileSize);					
 			}
-				
-	
+
+
 			position.x += tileSize.x + spacing;
 			if (position.x > resolution.x - (tileSize.x + spacing))
 			{
@@ -101,28 +136,17 @@ void TileSelector::RaylibDraw()
 	}
 }
 
-void TileSelector::Update()
+void TileSelector::DrawMiniTile()
 {
-	if (project == nullptr)
-		return;
+	const auto position(this->GetMousePosition());
+	const auto tileSize(project->GetTileSize());
+	const auto texturePosition = currentTile.imagePosition * tileSize;
 
-	const Vector2Int resolution(camera.GetResolution());
-	Vector2Int size(windowSize);
-	size.x *= 0.9f;
-	size.y *= 0.9f;
+	const Rectangle source(texturePosition.x, texturePosition.y, tileSize.x, tileSize.y);
+	const Rectangle dest(position.x - 15.f, position.y - 15.f, 25.f, 25.f);
+	const Vector2 origin = { 0.0f, 0.0f };
 
-	if (size.x >= resolution.x * 1.50f ||
-		size.y >= resolution.y * 1.50f || 
-		size.x <= resolution.x * 0.75f || 
-		size.y <= resolution.y * 0.75f)
-	{
-		const Vector2Int tileSize(project->GetTileSize());
-		size.x -= size.x % tileSize.x;
-		size.x -= size.y % tileSize.y;
-		camera.SetResolution(size);
-	}
-
-	newDataSelected = false;
+	DrawTexturePro(texture, source, dest, origin, 0.f, currentTile.tint);
 }
 
 void TileSelector::SelectNewFileData(const FileData* data)

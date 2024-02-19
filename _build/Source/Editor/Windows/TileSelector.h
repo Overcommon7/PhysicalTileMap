@@ -18,6 +18,7 @@ public:
 	bool IsNewDataSelected() const { return newDataSelected; }
 	
 	void SelectNewTile(const TileData& data);
+	const Texture2D& GetCurrentTexture();
 
 	Action<TileData> OnDataChanged;
 private:
@@ -32,6 +33,9 @@ private:
 	void ImGuiDraw() override;
 	void RaylibDraw() override;
 	void Update() override;
+
+	void DrawProject();
+	void DrawMiniTile();
 
 	void SelectNewTileData(Vector2Int imagePosition);
 	void SelectNewFileData(const FileData* data);

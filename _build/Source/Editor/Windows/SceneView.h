@@ -37,6 +37,7 @@ private:
 	void DrawDebugMenuItem();
 	void DrawFileMenu();
 	void DrawEditMenu();
+	void DrawMiniTile();
 
 
 	Vector2Int ScreenToGrid(Vector2Int screenPosition, bool isTexturePosition = false);
