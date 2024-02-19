@@ -22,6 +22,10 @@ private:
 	Vector2Int start;
 	Vector2Int end;
 
+	void DrawFileMenu();
+	void DrawEditMenu();
+	void DrawDebugMenu();
+
 	Vector2Int ScreenToGrid(Vector2Int screenPosition) const;
 	Vector2Int GridToScreen(Vector2Int gridPosition) const;
 

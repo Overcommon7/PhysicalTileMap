@@ -45,22 +45,46 @@ void GameWindow::ImGuiDraw()
 {
 	if (ImGui::BeginMenuBar())
 	{
-		if (ImGui::BeginMenu("Edit"))
-		{
-			if (ImGui::Button("Edit Mode"))
-			{
-				App::ChangeState(App::State::Editing);
-			}
-			if (ImGui::Button("Quit"))
-				App::Close();
-
-			ImGui::EndMenu();
-		}
+		DrawFileMenu();
+		DrawEditMenu();
+		DrawDebugMenu();
+			
 		ImGui::EndMenuBar();
 	}
 
-
 	ITextureWindow::ImGuiDraw();
+}
+
+void GameWindow::DrawFileMenu()
+{
+	if (ImGui::BeginMenu("File"))
+	{
+		if (ImGui::Button("Quit"))
+			App::Close();
+
+		ImGui::EndMenu();
+	}	
+}
+
+void GameWindow::DrawEditMenu()
+{
+	if (ImGui::BeginMenu("Edit"))
+	{
+		if (ImGui::Button("Edit Mode"))
+		{
+			App::ChangeState(App::State::Editing);
+		}
+
+		ImGui::EndMenu();
+	}
+}
+
+void GameWindow::DrawDebugMenu()
+{
+	if (ImGui::BeginMenu("Debug"))
+	{
+		ImGui::EndMenu();
+	}
 }
 
 Vector2Int GameWindow::ScreenToGrid(Vector2Int screenPosition) const

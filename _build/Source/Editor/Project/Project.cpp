@@ -86,8 +86,11 @@ void Project::SaveAs(const fs::path& path)
 
 	unordered_map<size_t, vector<string>> data;
 
+	for (auto& [hash, fData] : fileData)
+		data.insert({ hash, {} });
+
 	for (auto& [gridPosition, tile] : tiles)
-		data[tile.GetData().pathHash].push_back(tile.GetSaveString(gridPosition));
+		data.at(tile.GetData().pathHash).push_back(tile.GetSaveString(gridPosition));
 
 	ofstream inFile(path);
 
