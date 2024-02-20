@@ -9,8 +9,13 @@ struct FileData;
 class TileSelector : public ITextureWindow
 {
 public:
-	ITextureWindowConstructor(TileSelector) {
+	ITextureWindowConstructor(TileSelector)
+		, texture({})
+		, project(nullptr)
+	{
 		hasMenuBar = true;
+		
+		
 	}
 	void SetProject(Project* project);
 

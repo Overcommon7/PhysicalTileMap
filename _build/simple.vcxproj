@@ -105,6 +105,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Game\Physics\Rigidbody.cpp" />
+    <ClCompile Include="Source\Game\Physics\PhysicsWorld.cpp" />
     <ClCompile Include="Source\Editor\Utilities\EyeDropper.cpp" />
     <ClCompile Include="Source\Editor\Utilities\Selection.cpp" />
     <ClCompile Include="Source\App\ILayer.cpp" />
@@ -129,8 +131,12 @@
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Source\Editor\Project\Tile.cpp" />
     <ClCompile Include="Source\Editor\Windows\TileSelector.cpp" />
+    <ClCompile Include="Source\Game\Sprites\Sprite.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Game\Physics\PhyicsLayers.h" />
+    <ClInclude Include="Source\Game\Physics\Rigidbody.h" />
+    <ClInclude Include="Source\Game\Physics\PhysicsWorld.h" />
     <ClInclude Include="Source\Editor\Utilities\EyeDropper.h" />
     <ClInclude Include="Source\Editor\Utilities\Selection.h" />
     <ClInclude Include="Source\App\ILayer.h" />
@@ -153,6 +159,7 @@
     <ClInclude Include="Source\Utilities\Vector2Int.h" />
     <ClInclude Include="Source\Editor\Project\Tile.h" />
     <ClInclude Include="Source\Editor\Windows\TileSelector.h" />
+    <ClInclude Include="Source\Game\Sprites\Sprite.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

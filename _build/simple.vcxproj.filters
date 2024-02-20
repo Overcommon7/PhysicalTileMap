@@ -20,6 +20,9 @@
     <ClCompile Include="Source\App\ILayer.cpp" />
     <ClCompile Include="Source\Editor\Utilities\Selection.cpp" />
     <ClCompile Include="Source\Editor\Utilities\EyeDropper.cpp" />
+    <ClCompile Include="Source\Game\Sprites\Sprite.cpp" />
+    <ClCompile Include="Source\Game\Physics\PhysicsWorld.cpp" />
+    <ClCompile Include="Source\Game\Physics\Rigidbody.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\pch.h" />
@@ -44,5 +47,9 @@
     <ClInclude Include="Source\App\ILayer.h" />
     <ClInclude Include="Source\Editor\Utilities\Selection.h" />
     <ClInclude Include="Source\Editor\Utilities\EyeDropper.h" />
+    <ClInclude Include="Source\Game\Sprites\Sprite.h" />
+    <ClInclude Include="Source\Game\Physics\PhysicsWorld.h" />
+    <ClInclude Include="Source\Game\Physics\Rigidbody.h" />
+    <ClInclude Include="Source\Game\Physics\PhyicsLayers.h" />
   </ItemGroup>
 </Project>
