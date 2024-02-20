@@ -4,7 +4,10 @@
 #include "Rigidbody.h"
 #include "Game/Sprites/Sprite.h"
 
-PhysicsWorld::PhysicsWorld()
+#include "CollisionSolver.h"
+
+PhysicsWorld::PhysicsWorld(Project* project)
+	: mProject(project)
 {
 	for (const auto layer : PhyicsLayer::Layers)
 		mBodies.insert({ layer , {} });
@@ -21,14 +24,19 @@ PhysicsWorld::~PhysicsWorld()
 	mBodies.clear();
 }
 
-void PhysicsWorld::Initialize()
+void PhysicsWorld::Initialize(Project* project,
+	const std::function<Vector2Int(Vector2Int)>& screenToGrid,
+	const std::function<Vector2Int(Vector2Int)>& gridToScreen)
 {
-	sWorld = make_unique<PhysicsWorld>();
+	sWorld = make_unique<PhysicsWorld>(project);
+	sWorld->mGridToScreen = gridToScreen;
+	sWorld->mScreenToGrid = screenToGrid;
 }
 
 void PhysicsWorld::Terminate()
 {
-	sWorld.reset();
+	sWorld->mProject = nullptr;
+	sWorld.reset();	
 }
 
 void PhysicsWorld::Update()
@@ -109,24 +117,92 @@ void PhysicsWorld::InternalUpdate()
 
 void PhysicsWorld::InternalDebugDraw()
 {
+	for (const auto& [layer, bodies] : mBodies)
+	{
+		for (auto rigidbody : bodies)
+		{
+			DrawRectangleLinesEx(rigidbody->mSprite->Collider(), 2, RED);
+		}
+	}
 }
 
 void PhysicsWorld::DoPhysicsStep()
 {
+	ApplyForces();
+	SolveCollisions();
 }
 
 void PhysicsWorld::ApplyForces()
 {
+	for (const auto& [layer, bodies] : mBodies)
+	{
+		for (auto rigidbody : bodies)
+		{
+			if (!rigidbody->mIsActive)
+				continue;
+
+			rigidbody->mCollisions.clear();
+
+			if (rigidbody->mUseGravity)
+				ApplyGravity(rigidbody);
+
+			if (rigidbody->mUseDeceleration)
+				ApplyDeceleration(rigidbody);
+
+			rigidbody->mDecelerate = true;
+			auto velocity(Vector2Scale(rigidbody->mVelocity, TIME_STEP));
+			rigidbody->mSprite->Translate(velocity);
+		}	
+	}
 }
 
-void PhysicsWorld::ResolveCollisions()
+void PhysicsWorld::SolveCollisions()
 {
+	for (const auto& [layer, bodies] : mBodies)
+	{
+		for (auto rigidbody : bodies)
+		{
+			if (!rigidbody->mIsActive)
+				continue;
+
+			if (rigidbody->mCollideWithTilemap)
+				CollisionSolver::RigidbodyTilemapCollision(rigidbody, mProject, mScreenToGrid, mGridToScreen);
+
+			for (auto layer : rigidbody->mLayerMask)
+			{
+				for (auto other : mBodies.at(layer))
+				{
+					CollisionSolver::RigidbodyRigidbodyCollision(rigidbody, other);
+				}
+			}		
+		}
+	} 
 }
 
 void PhysicsWorld::ApplyGravity(Rigidbody* body)
 {
+	if (body->mGravityScale != 0)
+	{
+		float gravity = GRAVITY * body->mGravityScale;
+		body->mVelocity.y += gravity * TIME_STEP;   
+	}
 }
 
 void PhysicsWorld::ApplyDeceleration(Rigidbody* body)
 {
+	if (!body->mDecelerate)
+		return;
+
+	if (body->mVelocity.x < 0)
+	{
+		body->mVelocity.x += TIME_STEP * body->mDecerationSpeed;
+		if (body->mVelocity.x > std::numeric_limits<float>::epsilon() * -2.f)
+			body->mVelocity.x = 0;
+	}
+	else if (body->mVelocity.x > 0)
+	{
+		body->mVelocity.x -= TIME_STEP * body->mDecerationSpeed;
+		if (body->mVelocity.x < std::numeric_limits<float>::epsilon() * 2.f)
+			body->mVelocity.x = 0;
+	} 
 }

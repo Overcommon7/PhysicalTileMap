@@ -23,6 +23,7 @@
     <ClCompile Include="Source\Game\Sprites\Sprite.cpp" />
     <ClCompile Include="Source\Game\Physics\PhysicsWorld.cpp" />
     <ClCompile Include="Source\Game\Physics\Rigidbody.cpp" />
+    <ClCompile Include="Source\Game\Physics\CollisionSolver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\pch.h" />
@@ -50,6 +51,7 @@
     <ClInclude Include="Source\Game\Sprites\Sprite.h" />
     <ClInclude Include="Source\Game\Physics\PhysicsWorld.h" />
     <ClInclude Include="Source\Game\Physics\Rigidbody.h" />
-    <ClInclude Include="Source\Game\Physics\PhyicsLayers.h" />
+    <ClInclude Include="Source\Game\Physics\PhysicsLayers.h" />
+    <ClInclude Include="Source\Game\Physics\CollisionSolver.h" />
   </ItemGroup>
 </Project>

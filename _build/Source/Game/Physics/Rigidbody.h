@@ -1,20 +1,25 @@
 #pragma once
 #include "PhysicsLayers.h"
 class Sprite;
+class Rigidbody;
 
 struct Collision
 {
 	Rectangle overlap;
-	Sprite* sprite;
+	Rigidbody* rigidbody;
 
-	Collision(Sprite* sprite, Rectangle overlap)
-		: sprite(sprite), overlap(overlap) {}
+	Collision(Rigidbody* rigidbody, Rectangle overlap)
+		: rigidbody(rigidbody), overlap(overlap) 
+	{
+		assert(rigidbody != nullptr, "Collision: collision cannot have an empty sprite");
+		assert(overlap.width != -1 && overlap.height != -1, "Collision: collision must have a valid overlap");
+	}
 };
 
 class Rigidbody
 {
 public:
-	Rigidbody(Sprite* sprite, size_t layer, bool useGravity = true);
+	Rigidbody(Sprite* sprite, size_t layer, bool useGravity = true, bool isTrigger = false);
 	~Rigidbody();
 
 	void ApplyForce(Vector2 force);
@@ -24,7 +29,7 @@ public:
 	void SetVelocity(Vector2 velocity) { mVelocity = velocity; }
 	void SetVelocityX(float xVelocity) { mVelocity.x = xVelocity; }
 	void SetVelocityY(float yVelocity) { mVelocity.y = yVelocity; }
-	void SetDecelerationScale(float scale) { mDecerationScale = scale; }
+	void SetDecelerationSpeed(float speed) { mDecerationSpeed = speed; }
 	void SetGravityScale(float scale) { mGravityScale = scale; }
 	void SetActive(bool active) { mIsActive = active; }
 	void SetLayer(size_t layer);
@@ -37,7 +42,6 @@ public:
 
 	Vector2 GetVelocity() const { return mVelocity; }
 	float GetGravityScale() const { return mGravityScale; }
-	float GetDecelrationScale() const { return mDecerationScale; }
 	size_t GetLayer() const { return mLayer; }
 	Sprite* GetSprite();
 	const Sprite* GetSprite() const;
@@ -45,16 +49,18 @@ public:
 	bool IsActive() const { return mIsActive; }
 	bool IsGrounded() const { return mIsGrounded; }
 
-	const vector<Collision>& GetCollisions() const { return mCollisions; }
+	const vector<Collision>& SolveCollisions() const { return mCollisions; }
 private:
 	Vector2 mVelocity;
 	float mGravityScale;
-	float mDecerationScale;
+	float mDecerationSpeed;
 	bool mUseGravity;
 	bool mIsActive;
 	bool mIsGrounded;
 	bool mDecelerate;
 	bool mUseDeceleration;
+	bool mCollideWithTilemap;
+	bool mIsTrigger;
 	size_t mLayer;
 	Sprite* mSprite;
 
@@ -63,5 +69,6 @@ private:
 
 
 	friend class PhysicsWorld;
+	friend class CollisionSolver;
 };
 

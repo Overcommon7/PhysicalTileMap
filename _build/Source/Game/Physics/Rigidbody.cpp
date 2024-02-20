@@ -3,23 +3,27 @@
 
 #include "PhysicsWorld.h"
 
-Rigidbody::Rigidbody(Sprite* sprite, size_t layer, bool useGravity)
+Rigidbody::Rigidbody(Sprite* sprite, size_t layer, bool useGravity, bool isTrigger)
 	: mSprite(sprite)
 	, mUseGravity(useGravity)
 	, mGravityScale(1.f)
+	, mDecerationSpeed(100.f)
 	, mIsActive(true)
 	, mLayer(layer)
 	, mVelocity({0, 0})
 	, mUseDeceleration(true)
 	, mIsGrounded(false)
 	, mDecelerate(false)
+	, mCollideWithTilemap(true)
+	, mIsTrigger(isTrigger)
 {
-	PhysicsWorld::Get().AddRigidbody(this);
+	PhysicsWorld::AddRigidbody(this);
+	assert(sprite != nullptr, "Rigidbody: rigidbody cannot have a null sprite");
 }
 
 Rigidbody::~Rigidbody()
 {
-	PhysicsWorld::Get().RemoveRigidbody(this);
+	PhysicsWorld::RemoveRigidbody(this);
 }
 
 void Rigidbody::ApplyForce(Vector2 force)
@@ -41,21 +45,28 @@ void Rigidbody::ApplyForceY(float y)
 
 void Rigidbody::SetLayer(size_t layer)
 {
-	auto& world = PhysicsWorld::Get();
-	if (world.IsValidLayer(layer))
-		world.ChangeLayer(this, layer);
+	PhysicsWorld::ChangePhysicsLayer(this, layer);
 }
 
 void Rigidbody::AddLayerToLayerMask(size_t layer)
 {
-	if (!PhysicsWorld::Get().IsValidLayer(layer)) return;
-	if (std::find(mLayerMask.begin(), mLayerMask.end(), layer) != mLayerMask.end()) return;
+	if (std::find(mLayerMask.begin(), mLayerMask.end(), layer) != mLayerMask.end()) 
+		return;
 
 	mLayerMask.push_back(layer);
 }
 
 void Rigidbody::RemoveLayerFromLayerMask(size_t layer)
 {
-	if (!PhysicsWorld::Get().IsValidLayer(layer)) return;
 	std::erase(mLayerMask, layer);
+}
+
+Sprite* Rigidbody::GetSprite()
+{
+	return mSprite;
+}
+
+const Sprite* Rigidbody::GetSprite() const
+{
+	return mSprite;
 }
