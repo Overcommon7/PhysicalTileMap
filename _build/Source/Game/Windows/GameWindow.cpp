@@ -4,24 +4,30 @@
 #include "../Player/Player.h"
 #include "../../Editor/Project/Project.h"
 
+
+
 #include "App/App.h"
 
 GameWindow::ITextureWindowConstructor(GameWindow)
-	, player(nullptr)
+	, mPlayer(nullptr)
+	, mProject(nullptr)
 {
 	hasMenuBar = true;
 }
 
 void GameWindow::Start(Project* project)
 {
-	this->project = project;
-	player = new Player();
+	mProject = project;
+	
+	auto position(GridToScreen(project->GetPlayerStartPosition()));
+	auto size(project->GetTileSize() * 0.9f);
+	mPlayer = new Player(position, size);
 }
 
 void GameWindow::Stop()
 {
-	delete player;
-	player = nullptr;
+	delete mPlayer;
+	mPlayer = nullptr;
 }
 
 void GameWindow::Update()
@@ -31,14 +37,14 @@ void GameWindow::Update()
 
 void GameWindow::RaylibDraw()
 {
-	if (project == nullptr)
+	if (mProject == nullptr)
 		return;
 
 	auto GridToScreen = [this](Vector2Int gridPosition) {
 		return this->GridToScreen(gridPosition);
 		};
 
-	project->Draw(ScreenToGrid(start), ScreenToGrid(end), GridToScreen);
+	mProject->Draw(ScreenToGrid(mStart), ScreenToGrid(mEnd), GridToScreen);
 }
 
 void GameWindow::ImGuiDraw()
@@ -89,7 +95,7 @@ void GameWindow::DrawDebugMenu()
 
 Vector2Int GameWindow::ScreenToGrid(Vector2Int screenPosition) const
 {
-	const Vector2Int tileSize(project->GetTileSize());
+	const Vector2Int tileSize(mProject->GetTileSize());
 
 	if (screenPosition.x < 0)
 		screenPosition.x -= tileSize.x;
@@ -101,20 +107,20 @@ Vector2Int GameWindow::ScreenToGrid(Vector2Int screenPosition) const
 
 Vector2Int GameWindow::GridToScreen(Vector2Int gridPosition) const
 {
-	if (project == nullptr)
+	if (mProject == nullptr)
 		return Vector2Int();
 
-	return Vector2Int(gridPosition * project->GetTileSize());
+	return Vector2Int(gridPosition * mProject->GetTileSize());
 }
 
 void GameWindow::UpdateStartAndEnd()
 {
 	const Camera2D& rayCamera = camera.GetRaylibCamera();
 	const Vector2Int resolution(camera.GetResolution());
-	const Vector2Int tileSize(project->GetTileSize());
+	const Vector2Int tileSize(mProject->GetTileSize());
 	const Vector2Int first((int)rayCamera.target.x % tileSize.x, (int)rayCamera.target.y % tileSize.y);
 
 
-	start = camera.TransformPoint(first - tileSize);
-	end = camera.TransformPoint(resolution + tileSize);
+	mStart = camera.TransformPoint(first - tileSize);
+	mEnd = camera.TransformPoint(resolution + tileSize);
 }

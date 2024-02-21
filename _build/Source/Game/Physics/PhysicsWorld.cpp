@@ -9,7 +9,7 @@
 PhysicsWorld::PhysicsWorld(Project* project)
 	: mProject(project)
 {
-	for (const auto layer : PhyicsLayer::Layers)
+	for (const auto layer : PhysicsLayer::Layers)
 		mBodies.insert({ layer , {} });
 }
 
@@ -164,6 +164,8 @@ void PhysicsWorld::SolveCollisions()
 		{
 			if (!rigidbody->mIsActive)
 				continue;
+
+			rigidbody->mIsGrounded = false;
 
 			if (rigidbody->mCollideWithTilemap)
 				CollisionSolver::RigidbodyTilemapCollision(rigidbody, mProject, mScreenToGrid, mGridToScreen);

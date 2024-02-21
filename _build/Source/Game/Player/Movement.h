@@ -9,6 +9,6 @@ public:
 
 	};
 public:
-	static 
+	
 };
 

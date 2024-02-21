@@ -1,6 +1,6 @@
 #pragma once
 
-struct PhyicsLayer
+struct PhysicsLayer
 {
 private:
 	inline static const std::hash<string> mHasher = {};

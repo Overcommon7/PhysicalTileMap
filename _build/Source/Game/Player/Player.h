@@ -8,6 +8,7 @@
 class Player : public Sprite
 {
 public:
+	Player(Vector2 position, Vector2 size);
 	void Update();
 private:
 	Controls mControls;

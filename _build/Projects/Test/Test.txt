@@ -1,4 +1,5 @@
 50,50
+0,0
 Path:_build/Projects/Test/TileMap2.png
 --End
 Path:_build/Projects/Test/TileMap3.png

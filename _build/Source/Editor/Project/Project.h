@@ -23,6 +23,7 @@ class Project
 {
 public:
 	Vector2Int GetTileSize() const { return tileSize; }
+	Vector2Int GetPlayerStartPosition() const { return startPosition; }
 
 	void SetTile(Vector2Int position, const TileData& data);
 	void RemoveTile(Vector2Int position);
@@ -45,6 +46,7 @@ private:
 	fs::path projectFile;
 	bool isSaved;
 	Vector2Int tileSize;
+	Vector2Int startPosition;
 
 	void LoadTilesFromFile(size_t hashValue, fstream& inFile);
 	Color IntToColor(int value);

@@ -16,18 +16,17 @@ public:
 	void RaylibDraw() override;
 	void ImGuiDraw() override;
 
+	Vector2Int ScreenToGrid(Vector2Int screenPosition) const;
+	Vector2Int GridToScreen(Vector2Int gridPosition) const;
 private:
-	Project* project;
-	Player* player;
-	Vector2Int start;
-	Vector2Int end;
+	Project* mProject;
+	Player* mPlayer;
+	Vector2Int mStart;
+	Vector2Int mEnd;
 
 	void DrawFileMenu();
 	void DrawEditMenu();
 	void DrawDebugMenu();
-
-	Vector2Int ScreenToGrid(Vector2Int screenPosition) const;
-	Vector2Int GridToScreen(Vector2Int gridPosition) const;
 
 	void UpdateStartAndEnd();
 };

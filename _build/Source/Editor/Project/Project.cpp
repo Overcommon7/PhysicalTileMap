@@ -60,6 +60,9 @@ Project::Project(const fs::path& projectFile)
 	std::getline(inFile, line);
 	tileSize = StringToVector(line);
 
+	std::getline(inFile, line);
+	startPosition = StringToVector(line);
+
 	while (!inFile.eof())
 	{
 		std::getline(inFile, line);
@@ -95,6 +98,7 @@ void Project::SaveAs(const fs::path& path)
 	ofstream inFile(path);
 
 	inFile << tileSize.x << ',' << tileSize.y << '\n';
+	inFile << startPosition.x << ',' << startPosition.y << '\n';
 
 	for (const auto& [pathHash, tileData] : data)
 	{
