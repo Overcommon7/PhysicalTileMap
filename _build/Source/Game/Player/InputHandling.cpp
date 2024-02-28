@@ -3,15 +3,42 @@
 
 void InputHandling::Update(Controls& controls, const Keys& keys)
 {
-	controls.isHoldingJump = IsKeyDown(keys.jump);
-	controls.isHoldingLeft = IsKeyDown(keys.left);
-	controls.isHoldingRight = IsKeyDown(keys.right);
+	controls.mIsHoldingJump = IsDown(keys.jump);
+	controls.mIsHoldingLeft = IsDown(keys.left);
+	controls.mIsHoldingRight = IsDown(keys.right);
 
-	controls.thisFrame.jumpPressed = IsKeyPressed(keys.jump);
-	controls.thisFrame.leftPressed = IsKeyPressed(keys.left);
-	controls.thisFrame.rightPressed = IsKeyPressed(keys.right);
+	controls.mThisFrame.jumpPressed = IsPressedThisFrame(keys.jump);
+	controls.mThisFrame.leftPressed = IsPressedThisFrame(keys.left);
+	controls.mThisFrame.rightPressed = IsPressedThisFrame(keys.right);
 
-	controls.thisFrame.jumpReleased = IsKeyReleased(keys.jump);
-	controls.thisFrame.leftReleased = IsKeyReleased(keys.left);
-	controls.thisFrame.rightReleased = IsKeyReleased(keys.right);
+	controls.mThisFrame.jumpReleased = IsReleasedThisFrame(keys.jump);
+	controls.mThisFrame.leftReleased = IsReleasedThisFrame(keys.left);
+	controls.mThisFrame.rightReleased = IsReleasedThisFrame(keys.right);
+}
+
+bool InputHandling::IsPressedThisFrame(const std::array<KeyboardKey, 2>& keys)
+{
+	for (auto key : keys)
+		if (IsKeyPressed(key))
+			return true;
+
+	return false;
+}
+
+bool InputHandling::IsReleasedThisFrame(const std::array<KeyboardKey, 2>& keys)
+{
+	for (auto key : keys)
+		if (IsKeyReleased(key))
+			return true;
+
+	return false;
+}
+
+bool InputHandling::IsDown(const std::array<KeyboardKey, 2>& keys)
+{
+	for (auto key : keys)
+		if (IsKeyDown(key))
+			return true;
+
+	return false;
 }

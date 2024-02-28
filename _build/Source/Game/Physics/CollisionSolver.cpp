@@ -13,6 +13,8 @@ void CollisionSolver::RigidbodyRigidbodyCollision(Rigidbody* rigidbody, Rigidbod
         return;
 
     rigidbody->mCollisions.emplace_back(other, overlap);
+    ++sCollisionsSolved;
+    ++sCollisionsSolvedThisSecond;
 }
 
 void CollisionSolver::RigidbodyTilemapCollision(Rigidbody* rigidbody, Project* project, Conversion screenToGrid, Conversion gridToScreen)
@@ -20,51 +22,56 @@ void CollisionSolver::RigidbodyTilemapCollision(Rigidbody* rigidbody, Project* p
     bool stopX = false;
     bool stopY = false;
    
-    while (true)
+    auto c(rigidbody->mSprite->Collider());
+    Vector2Int offset = project->GetTileSize() - Vector2Int(c.width, c.height);
+
     {
         auto collider = rigidbody->mSprite->Collider();
         Vector2Int corner = screenToGrid({ collider.x, collider.y + collider.height });
-        if (!project->GetTile(corner).has_value())
-            break;
+        SolveCorner(SolveBottomLeftCorner, rigidbody, project, corner, offset, gridToScreen, stopX, stopY);
+    }   
 
-        SolveBottomLeftCorner(rigidbody, corner, project, gridToScreen, stopX, stopY);
-    }
-       
-
-    while (true)
     {
         auto collider = rigidbody->mSprite->Collider();
         Vector2Int corner = screenToGrid({ collider.x + collider.width, collider.y + collider.height });
-        if (!project->GetTile(corner).has_value())
-            break;
-
-        SolveBottomRightCorner(rigidbody, corner, project, gridToScreen, stopX, stopY);
+        SolveCorner(SolveBottomRightCorner, rigidbody, project, corner, offset, gridToScreen, stopX, stopY);
     }
 
-    while (true)
     {
         auto collider = rigidbody->mSprite->Collider();
         Vector2Int corner = screenToGrid({ collider.x, collider.y });
-        if (!project->GetTile(corner).has_value())
-            break;
-
-        SolveTopLeftCorner(rigidbody, corner, project, gridToScreen, stopX, stopY);
+        SolveCorner(SolveTopLeftCorner, rigidbody, project, corner, offset, gridToScreen, stopX, stopY);
     }
 
-    while (true)
     {
         auto collider = rigidbody->mSprite->Collider();
         Vector2Int corner = screenToGrid({ collider.x + collider.width, collider.y });
-        if (!project->GetTile(corner).has_value())
-            break;
-
-        SolveTopRightCorner(rigidbody, corner, project, gridToScreen, stopX, stopY);
+        SolveCorner(SolveTopRightCorner, rigidbody, project, corner, offset, gridToScreen, stopX, stopY);
     }
 
     if (stopX)
         rigidbody->mVelocity.x = 0;
     if (stopY)
         rigidbody->mVelocity.y = 0;
+
+    ++sCollisionsSolved;
+    ++sCollisionsSolvedThisSecond;
+}
+
+void CollisionSolver::ImGuiDraw()
+{
+    if (ImGui::CollapsingHeader("Collision Resolver"))
+    {
+        ImGui::Text("Collisions Solved %zu", sCollisionsSolved);
+        ImGui::Text("Collisions Solved This Second %i", sCollisionsSolvedLastSecond);
+    }
+
+    timer += Time::DeltaTime();
+    if (timer < 1.f) return;
+
+    sCollisionsSolvedLastSecond = sCollisionsSolvedThisSecond;
+    sCollisionsSolvedThisSecond = 0;
+    timer = 0;
 }
 
 bool CollisionSolver::TryGetRectangleOverlap(Rectangle a, Rectangle b, Rectangle& overlap)
@@ -90,14 +97,14 @@ bool CollisionSolver::TryGetRectangleOverlap(Rectangle a, Rectangle b, Rectangle
     return true;
 }
 
-void CollisionSolver::SolveTopRightCorner(Rigidbody* rigidbody, Vector2Int corner, Project* project, Conversion gridToScreen, bool& stopX, bool& stopY)
+void CollisionSolver::SolveTopRightCorner(Rigidbody* rigidbody, Vector2Int corner, Vector2Int offset, Conversion gridToScreen, bool& stopX, bool& stopY)
 {
     Vector2 position = rigidbody->mSprite->GetPosition();
 
     if (rigidbody->mVelocity.x > 0)
     {
         --corner.x;
-        position.x = gridToScreen(corner).x;
+        position.x = gridToScreen(corner).x + offset.x;
         stopX = true;
     }
 
@@ -111,7 +118,7 @@ void CollisionSolver::SolveTopRightCorner(Rigidbody* rigidbody, Vector2Int corne
     rigidbody->mSprite->SetPosition(position);
 }
 
-void CollisionSolver::SolveTopLeftCorner(Rigidbody* rigidbody, Vector2Int corner, Project* project, Conversion gridToScreen, bool& stopX, bool& stopY)
+void CollisionSolver::SolveTopLeftCorner(Rigidbody* rigidbody, Vector2Int corner, Vector2Int offset, Conversion gridToScreen, bool& stopX, bool& stopY)
 {
     Vector2 position = rigidbody->mSprite->GetPosition();
 
@@ -132,14 +139,14 @@ void CollisionSolver::SolveTopLeftCorner(Rigidbody* rigidbody, Vector2Int corner
     rigidbody->mSprite->SetPosition(position);
 }
 
-void CollisionSolver::SolveBottomRightCorner(Rigidbody* rigidbody, Vector2Int corner, Project* project, Conversion gridToScreen, bool& stopX, bool& stopY)
+void CollisionSolver::SolveBottomRightCorner(Rigidbody* rigidbody, Vector2Int corner, Vector2Int offset, Conversion gridToScreen, bool& stopX, bool& stopY)
 {
     Vector2 position = rigidbody->mSprite->GetPosition();
 
     if (rigidbody->mVelocity.x > 0)
     {
         --corner.x;
-        position.x = gridToScreen(corner).x;
+        position.x = gridToScreen(corner).x + offset.x;
         stopX = true;
     }
 
@@ -147,20 +154,20 @@ void CollisionSolver::SolveBottomRightCorner(Rigidbody* rigidbody, Vector2Int co
     {
         --corner.y;        
         stopY = true;
-        position.y = gridToScreen(corner).y;
+        position.y = gridToScreen(corner).y + offset.y;
         rigidbody->mIsGrounded = true;
     }
 
     rigidbody->mSprite->SetPosition(position);
 }
 
-void CollisionSolver::SolveBottomLeftCorner(Rigidbody* rigidbody, Vector2Int corner, Project* project, Conversion gridToScreen, bool& stopX, bool& stopY)
+void CollisionSolver::SolveBottomLeftCorner(Rigidbody* rigidbody, Vector2Int corner, Vector2Int offset, Conversion gridToScreen, bool& stopX, bool& stopY)
 {
     Vector2 position = rigidbody->mSprite->GetPosition();
-
     if (rigidbody->mVelocity.x < 0)
     {
         ++corner.x;
+        
         position.x = gridToScreen(corner).x;
         stopX = true;
     }
@@ -169,9 +176,20 @@ void CollisionSolver::SolveBottomLeftCorner(Rigidbody* rigidbody, Vector2Int cor
     {
         --corner.y;        
         stopY = true;
-        position.y = gridToScreen(corner).y;
+        position.y = gridToScreen(corner).y + offset.y;
         rigidbody->mIsGrounded = true;
     }
 
     rigidbody->mSprite->SetPosition(position);
 }
+
+void CollisionSolver::SolveCorner(const std::function<void(Rigidbody*, Vector2Int, Vector2Int, Conversion, bool&, bool&)> solver, 
+    Rigidbody* rigidbody, Project* project, Vector2Int corner, Vector2Int offset, Conversion gridToScreen, 
+    bool& stopX, bool& stopY)
+{
+    if (!project->GetTile(corner).has_value())
+        return;
+
+    SolveBottomLeftCorner(rigidbody, corner, offset, gridToScreen, stopX, stopY);
+}
+

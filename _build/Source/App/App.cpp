@@ -4,22 +4,27 @@
 #include "Editor/Editor.h"
 #include "Game/Game.h"
 
+#include "ImGuiUtilities/ImGuiUtils.h"
+
 App::App()
-	: queriedStateChange(std::nullopt)
-	, state(State::Editing)
-	, shouldClose(false)
+	: mQueriedStateChange(std::nullopt)
+	, mState(State::Editing)
+	, mShouldClose(false)
 {
-	assert(!isCreated);
-	isCreated = true;
-	instance = this;
+	assert(!sIsCreated);
+	sIsCreated = true;
+	sInstance = this;
 
 	{
-		constexpr int screenWidth = 1280;
-		constexpr int screenHeight = 720;
-
 		SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_VSYNC_HINT | FLAG_WINDOW_RESIZABLE);
-		InitWindow(screenWidth, screenHeight, "OverTiled");
-		SetTargetFPS(GetMonitorRefreshRate(GetCurrentMonitor()));
+		InitWindow(500, 500, "OverTiled");
+		while (!IsWindowReady());
+
+		int monitor = GetCurrentMonitor();
+		Vector2Int screenSize(GetMonitorWidth(monitor) * 0.75f, GetMonitorHeight(monitor) * 0.75f);
+		SetWindowSize(screenSize.x, screenSize.y);
+		SetWindowPosition(screenSize.x * 0.125f, screenSize.y * 0.125f);
+		SetTargetFPS(GetMonitorRefreshRate(monitor));
 		SetExitKey(KEY_NULL);
 	}
 
@@ -29,39 +34,40 @@ App::App()
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	}
 
-	editor = new Editor();
-	game = new Game();
+	mEditor = new Editor();
+	mGame = new Game();
 
-	layers.emplace_back(editor)->Initialize();
-	layers.emplace_back(game)->Initialize();
+	mLayers.emplace_back(mEditor)->Initialize();
+	mLayers.emplace_back(mGame)->Initialize();
 }
 
 App::~App()
 {
-	for (const auto& layer : layers)
+	for (const auto& layer : mLayers)
 		layer->Shutdown();
 
-	layers.clear();
+	mLayers.clear();
 
 	rlImGuiShutdown();
 	CloseWindow();
 
-	isCreated = false;
-	instance = nullptr;
+	sIsCreated = false;
+	sInstance = nullptr;
 }
 
 void App::Run()
 {
-	while (!WindowShouldClose() && !shouldClose)
+	while (!WindowShouldClose() && !mShouldClose)
 	{
-		if (queriedStateChange)
+		if (mQueriedStateChange)
 		{
-			state = *queriedStateChange;
-			queriedStateChange = std::nullopt;
+			mState = *mQueriedStateChange;
+			mQueriedStateChange = std::nullopt;
 		}
 
 		Time::Update();
-		ILayer* currentLayer = layers[(int)state].get();
+		ImGuiUtils::NewFrame();
+		ILayer* currentLayer = mLayers[(int)mState].get();
 
 		currentLayer->Update();
 
@@ -83,19 +89,19 @@ void App::Run()
 
 void App::ChangeState(State state)
 {
-	instance->queriedStateChange = state;
+	sInstance->mQueriedStateChange = state;
 
 	if (state == State::Gameplay)
 	{
-		instance->game->OnStart(instance->editor->currentProject.get());
+		sInstance->mGame->OnStart(sInstance->mEditor->currentProject.get());
 	}
 	else if (state == State::Editing)
 	{
-		instance->game->Stop();
+		sInstance->mGame->Stop();
 	}
 }
 
 void App::Close()
 {
-	instance->shouldClose = true;
+	sInstance->mShouldClose = true;
 }

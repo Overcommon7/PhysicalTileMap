@@ -2,34 +2,34 @@
 #include "IWindow.h"
 
 IWindow::IWindow(const string& windowTitle)
-    : title(windowTitle)
-    , displayTitle(title)
+    : mTtitle(windowTitle)
+    , mDisplayTitle(mTtitle)
 {
-    if (!titles.insert({windowTitle, 0}).second)
+    if (!sTitles.insert({windowTitle, 0}).second)
     {
-        title += "##" + to_string(titles[windowTitle]++);
+        mTtitle += "##" + to_string(sTitles[windowTitle]++);
     }
 }
 
 const string_view& IWindow::GetTitle() const
 {
-    return displayTitle;
+    return mDisplayTitle;
 }
 
 const char* IWindow::GetImGuiTitle() const
 {
-    return title.c_str();
+    return mTtitle.c_str();
 }
 
 void IWindow::ImGuiDrawBegin()
 {
-    if (hasMenuBar)
-        ImGui::Begin(GetImGuiTitle(), isClosable ? &isClosed : nullptr, ImGuiWindowFlags_MenuBar);
+    if (mHasMenuBar)
+        ImGui::Begin(GetImGuiTitle(), mIsClosable ? &mIsClosed : nullptr, ImGuiWindowFlags_MenuBar);
     else
-        ImGui::Begin(GetImGuiTitle(), isClosable ? &isClosed : nullptr);
+        ImGui::Begin(GetImGuiTitle(), mIsClosable ? &mIsClosed : nullptr);
 
-    windowPosition = ImGui::GetWindowPos();
-    windowSize = ImGui::GetWindowSize();
+    mWindowPosition = ImGui::GetWindowPos();
+    mWindowSize = ImGui::GetWindowSize();
 }
 
 void IWindow::ImGuiDrawEnd()
@@ -39,6 +39,6 @@ void IWindow::ImGuiDrawEnd()
 
 void IWindow::DrawDebugMenuItems()
 {
-    ImGui::Text("Window Position: %i, %i", windowPosition.x, windowPosition.y);
-    ImGui::Text("Window Size: %i, %i", windowSize.x, windowSize.y);
+    ImGui::Text("Window Position: %i, %i", mWindowPosition.x, mWindowPosition.y);
+    ImGui::Text("Window Size: %i, %i", mWindowSize.x, mWindowSize.y);
 }

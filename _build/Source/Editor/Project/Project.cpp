@@ -3,38 +3,38 @@
 
 void Project::SetTile(Vector2Int position, const TileData& data)
 {
-	if (isSaved)
+	if (mIsSaved)
 	{
-		isSaved = false;
+		mIsSaved = false;
 		SetWindowTitle((GetWindowTitle() + '*').c_str());
 	}
 		
-	tiles[position].SetData(data);
+	mTiles[position].SetData(data);
 }
 
 void Project::RemoveTile(Vector2Int position)
 {
-	tiles.erase(position);
+	mTiles.erase(position);
 }
 
 void Project::Draw(Vector2Int begin, Vector2Int end, const std::function<Vector2Int(Vector2Int)>& gridToScreen)
 {
-	const auto endIter = tiles.end();
+	const auto endIter = mTiles.end();
 
 	for (int y = begin.y; y < end.y; ++y)
 	{
 		for (int x = begin.x; x < end.x; ++x)
 		{
 			Vector2Int position(x, y);
-			auto iter = tiles.find(position);
+			auto iter = mTiles.find(position);
 
 			if (iter == endIter) continue;
 
 			const TileData& tileData = iter->second.GetData();
 			position = gridToScreen(position);
-			const auto& data = fileData.at(tileData.pathHash);
-			Rectangle source(tileData.imagePosition.x * tileSize.x, tileData.imagePosition.y * tileSize.y, tileSize.x, tileSize.y);
-			DrawTextureRec(data.texture, source, position, tileData.tint);
+			const auto& data = mFileData.at(tileData.pathHash);
+			Rectangle source(tileData.imagePosition.x * mTileSize.x, tileData.imagePosition.y * mTileSize.y, mTileSize.x, mTileSize.y);
+			DrawTextureRec(data.mTexture, source, position, tileData.tint);
 		}
 	}
 }
@@ -42,15 +42,15 @@ void Project::Draw(Vector2Int begin, Vector2Int end, const std::function<Vector2
 vector<const FileData*> Project::GetFileData() const
 {
 	vector<const FileData*> value;
-	for (const auto& data : fileData)
+	for (const auto& data : mFileData)
 		value.push_back(&data.second);
 
 	return value;
 }
 
 Project::Project(const fs::path& projectFile)
-	: projectFile(projectFile)
-	, isSaved(true)
+	: mProjectFile(projectFile)
+	, mIsSaved(true)
 {
 	fstream inFile(projectFile);
 	string line;
@@ -58,10 +58,10 @@ Project::Project(const fs::path& projectFile)
 		return;
 
 	std::getline(inFile, line);
-	tileSize = StringToVector(line);
+	mTileSize = StringToVector(line);
 
 	std::getline(inFile, line);
-	startPosition = StringToVector(line);
+	mStartPosition = StringToVector(line);
 
 	while (!inFile.eof())
 	{
@@ -70,8 +70,8 @@ Project::Project(const fs::path& projectFile)
 		{
 			fs::path imagePath = line.substr(5);
 			FileData data(imagePath);
-			fileData.insert({ data.hash, data });
-			LoadTilesFromFile(data.hash, inFile);
+			mFileData.insert({ data.mHash, data });
+			LoadTilesFromFile(data.mHash, inFile);
 		}
 	}
 }
@@ -79,7 +79,7 @@ Project::Project(const fs::path& projectFile)
 
 void Project::Save()
 {
-	SaveAs(projectFile);
+	SaveAs(mProjectFile);
 }
 
 void Project::SaveAs(const fs::path& path)
@@ -89,36 +89,36 @@ void Project::SaveAs(const fs::path& path)
 
 	unordered_map<size_t, vector<string>> data;
 
-	for (auto& [hash, fData] : fileData)
+	for (auto& [hash, fData] : mFileData)
 		data.insert({ hash, {} });
 
-	for (auto& [gridPosition, tile] : tiles)
+	for (auto& [gridPosition, tile] : mTiles)
 		data.at(tile.GetData().pathHash).push_back(tile.GetSaveString(gridPosition));
 
 	ofstream inFile(path);
 
-	inFile << tileSize.x << ',' << tileSize.y << '\n';
-	inFile << startPosition.x << ',' << startPosition.y << '\n';
+	inFile << mTileSize.x << ',' << mTileSize.y << '\n';
+	inFile << mStartPosition.x << ',' << mStartPosition.y << '\n';
 
 	for (const auto& [pathHash, tileData] : data)
 	{
-		inFile << "Path:" << fileData.at(pathHash).filepath.string() << '\n';
+		inFile << "Path:" << mFileData.at(pathHash).mFilepath.string() << '\n';
 		for (const auto& str : tileData)
 			inFile << str << '\n';
 		inFile << "--End\n";
 	}
 
 	inFile.close();
-	isSaved = true;
-	projectFile = path;
+	mIsSaved = true;
+	mProjectFile = path;
 
 	SetWindowTitle(GetWindowTitle().c_str());
 }
 
 std::optional<TileData> Project::GetTile(Vector2Int gridPosition) const
 {
-	if (tiles.contains(gridPosition))
-		return tiles.at(gridPosition).GetData();
+	if (mTiles.contains(gridPosition))
+		return mTiles.at(gridPosition).GetData();
 
 	return std::nullopt;
 }
@@ -149,7 +149,7 @@ void Project::LoadTilesFromFile(size_t hashValue, fstream& inFile)
 		}
 			
 		
-		tiles.insert({ gridPosition, Tile(TileData(imagePosition, hashValue, color)) });
+		mTiles.insert({ gridPosition, Tile(TileData(imagePosition, hashValue, color)) });
 	}
 }
 
@@ -175,27 +175,27 @@ Vector2Int Project::StringToVector(const string& value)
 }
 
 FileData::FileData(const fs::path& filepath)
-	: filepath(filepath)
+	: mFilepath(filepath)
 {
-	hash = fs::hash_value(filepath);
-	name = filepath.stem().string();
+	mHash = fs::hash_value(filepath);
+	mName = filepath.stem().string();
 
-	auto iter = textures.find(hash);
+	auto iter = sTextures.find(mHash);
 
-	if (iter == textures.end())
+	if (iter == sTextures.end())
 	{
-		texture = LoadTexture(filepath.string().c_str());
-		textures.insert({ hash, texture });
+		mTexture = LoadTexture(filepath.string().c_str());
+		sTextures.insert({ mHash, mTexture });
 	}
 	else
 	{
-		texture = iter->second;
+		mTexture = iter->second;
 	}
 }
 
 void FileData::Terminate()
 {
-	for (const auto& [hash, texture] : textures)
+	for (const auto& [hash, texture] : sTextures)
 		UnloadTexture(texture);
 }
 

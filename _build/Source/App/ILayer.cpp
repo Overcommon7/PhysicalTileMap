@@ -5,25 +5,25 @@
 
 void ILayer::Initialize()
 {
-	for (const auto& window : windows)
+	for (const auto& window : mWindows)
 		window->Initialize();
 }
 
 void ILayer::Shutdown()
 {
-	for (const auto& window : windows)
+	for (const auto& window : mWindows)
 		window->Terminate();
 }
 
 void ILayer::Update()
 {
-	for (auto& window : windows)
+	for (auto& window : mWindows)
 		window->Update();
 }
 
 void ILayer::RaylibDraw()
 {
-	for (const auto& window : windows)
+	for (const auto& window : mWindows)
 	{
 		ITextureWindow* textureWindow = dynamic_cast<ITextureWindow*>(window.get());
 		if (!textureWindow)	continue;
@@ -36,7 +36,7 @@ void ILayer::RaylibDraw()
 
 void ILayer::ImGuiDraw()
 {
-	for (const auto& window : windows)
+	for (const auto& window : mWindows)
 	{
 		window->ImGuiDrawBegin();
 		window->ImGuiDraw();

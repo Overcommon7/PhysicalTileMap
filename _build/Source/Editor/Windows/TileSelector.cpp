@@ -5,42 +5,42 @@
 
 void TileSelector::SetProject(Project* project)
 {
-	this->project = project;
+	this->mProject = project;
 	if (project == nullptr)
 		return;
 
-	fileData = project->GetFileData();
-	if (fileData.empty()) return;
+	mFileData = project->GetFileData();
+	if (mFileData.empty()) return;
 
-	SelectNewFileData(fileData.front());
+	SelectNewFileData(mFileData.front());
 }
 
 const TileData& TileSelector::GetSelectedTileData() const
 {
-	return currentTile;
+	return mCurrentTile;
 }
 
 void TileSelector::SelectNewTile(const TileData& data)
 {
-	auto it = std::find_if(fileData.begin(), fileData.end(), [&data](const FileData* fData) {
-		return fData->hash == data.pathHash;
+	auto it = std::find_if(mFileData.begin(), mFileData.end(), [&data](const FileData* fData) {
+		return fData->mHash == data.pathHash;
 		});
 
-	if (it == fileData.end())
+	if (it == mFileData.end())
 		return;
 
-	texture = (*it)->texture;
-	currentTile = data;
+	mTexture = (*it)->mTexture;
+	mCurrentTile = data;
 	
-	newTileSelected = true;
-	newDataSelected = true;
+	mNewTileSelected = true;
+	mNewDataSelected = true;
 
-	OnDataChanged.Invoke(currentTile);
+	OnDataChanged.Invoke(mCurrentTile);
 }
 
 const Texture2D& TileSelector::GetCurrentTexture()
 {
-	return texture;
+	return mTexture;
 }
 
 void TileSelector::ImGuiDraw()
@@ -55,7 +55,7 @@ void TileSelector::ImGuiDraw()
 		ImGui::EndMenuBar();
 	}
 
-	if (project == nullptr)
+	if (mProject == nullptr)
 		return;
 
 	DrawTabs();
@@ -63,7 +63,7 @@ void TileSelector::ImGuiDraw()
 
 void TileSelector::RaylibDraw()
 {
-	if (project == nullptr)
+	if (mProject == nullptr)
 		return;
 
 	DrawProject();
@@ -72,11 +72,11 @@ void TileSelector::RaylibDraw()
 
 void TileSelector::Update()
 {
-	if (project == nullptr)
+	if (mProject == nullptr)
 		return;
 
 	const Vector2Int resolution(camera.GetResolution());
-	Vector2Int size(windowSize);
+	Vector2Int size(mWindowSize);
 	size.x *= 0.9f;
 	size.y *= 0.9f;
 
@@ -85,31 +85,31 @@ void TileSelector::Update()
 		size.x <= resolution.x * 0.75f || 
 		size.y <= resolution.y * 0.75f)
 	{
-		const Vector2Int tileSize(project->GetTileSize());
+		const Vector2Int tileSize(mProject->GetTileSize());
 		size.x -= size.x % tileSize.x;
 		size.x -= size.y % tileSize.y;
 		camera.SetResolution(size);
 	}
 
-	newDataSelected = false;
+	mNewDataSelected = false;
 }
 
 void TileSelector::DrawProject()
 {
-	const Vector2Int tileSize = project->GetTileSize();
-	Vector2Int position = Vector2Int(spacing, spacing);
+	const Vector2Int tileSize = mProject->GetTileSize();
+	Vector2Int position = Vector2Int(sSpacing, sSpacing);
 	const Vector2Int resolution(camera.GetResolution());
 
 	bool isInTexture = IsInsideTexture(::GetMousePosition());
 	bool mouseClicked = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
 	bool selectNewTile = isInTexture && mouseClicked;
 
-	for (int y = 0; y < texture.height; y += tileSize.y)
+	for (int y = 0; y < mTexture.height; y += tileSize.y)
 	{
-		for (int x = 0; x < texture.width; x += tileSize.x)
+		for (int x = 0; x < mTexture.width; x += tileSize.x)
 		{
 			Rectangle source(x, y, tileSize.x, tileSize.y);
-			DrawTextureRec(texture, source, position, WHITE);
+			DrawTextureRec(mTexture, source, position, WHITE);
 			bool isColliding = false;
 
 			Rectangle collider(position.x, position.y, tileSize.x, tileSize.y);
@@ -126,11 +126,11 @@ void TileSelector::DrawProject()
 			}
 
 
-			position.x += tileSize.x + spacing;
-			if (position.x > resolution.x - (tileSize.x + spacing))
+			position.x += tileSize.x + sSpacing;
+			if (position.x > resolution.x - (tileSize.x + sSpacing))
 			{
-				position.y += tileSize.y + spacing;
-				position.x = spacing;
+				position.y += tileSize.y + sSpacing;
+				position.x = sSpacing;
 			}
 		}
 	}
@@ -139,33 +139,33 @@ void TileSelector::DrawProject()
 void TileSelector::DrawMiniTile()
 {
 	const auto position(this->GetMousePosition());
-	const auto tileSize(project->GetTileSize());
-	const auto texturePosition = currentTile.imagePosition * tileSize;
+	const auto tileSize(mProject->GetTileSize());
+	const auto texturePosition = mCurrentTile.imagePosition * tileSize;
 
 	const Rectangle source(texturePosition.x, texturePosition.y, tileSize.x, tileSize.y);
 	const Rectangle dest(position.x - 15.f, position.y - 15.f, 25.f, 25.f);
 	const Vector2 origin = { 0.0f, 0.0f };
 
-	DrawTexturePro(texture, source, dest, origin, 0.f, currentTile.tint);
+	DrawTexturePro(mTexture, source, dest, origin, 0.f, mCurrentTile.tint);
 }
 
 void TileSelector::SelectNewFileData(const FileData* data)
 {
-	currentTile.pathHash = data->hash;
-	currentTile.imagePosition = Vector2Int();
-	currentTile.tint = WHITE;
+	mCurrentTile.pathHash = data->mHash;
+	mCurrentTile.imagePosition = Vector2Int();
+	mCurrentTile.tint = WHITE;
 
-	texture = data->texture;
-	newDataSelected = true;
+	mTexture = data->mTexture;
+	mNewDataSelected = true;
 
-	OnDataChanged.Invoke(currentTile);
+	OnDataChanged.Invoke(mCurrentTile);
 }
 
 void TileSelector::SelectNewTileData(Vector2Int imagePosition)
 {
-	currentTile.tint = WHITE;
-	currentTile.imagePosition = imagePosition;
-	OnDataChanged.Invoke(currentTile);
+	mCurrentTile.tint = WHITE;
+	mCurrentTile.imagePosition = imagePosition;
+	OnDataChanged.Invoke(mCurrentTile);
 }
 
 void TileSelector::DrawTabs()
@@ -175,12 +175,12 @@ void TileSelector::DrawTabs()
 
 		
 
-	for (const auto& data : fileData)
+	for (const auto& data : mFileData)
 	{
-		if (newTileSelected)
+		if (mNewTileSelected)
 		{
-			bool isOpen = data->hash == currentTile.pathHash;
-			if (!ImGui::BeginTabItem(data->name.c_str(), &isOpen))
+			bool isOpen = data->mHash == mCurrentTile.pathHash;
+			if (!ImGui::BeginTabItem(data->mName.c_str(), &isOpen))
 				continue;
 			
 			ITextureWindow::ImGuiDraw();
@@ -188,9 +188,9 @@ void TileSelector::DrawTabs()
 		}
 		else
 		{
-			if (!ImGui::BeginTabItem(data->name.c_str())) continue;
+			if (!ImGui::BeginTabItem(data->mName.c_str())) continue;
 
-			if (data->hash != currentTile.pathHash)
+			if (data->mHash != mCurrentTile.pathHash)
 			{
 				SelectNewFileData(data);
 			}
@@ -200,6 +200,6 @@ void TileSelector::DrawTabs()
 		}	
 	}
 
-	newTileSelected = false;
+	mNewTileSelected = false;
 	ImGui::EndTabBar();
 }

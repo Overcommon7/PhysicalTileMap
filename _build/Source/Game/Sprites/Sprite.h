@@ -43,6 +43,7 @@ public:
 
 	const size_t GetID() const { return mId; }
 
+	
 
 	virtual void Draw();
 	Rectangle Collider();
@@ -52,6 +53,7 @@ public:
 
 	virtual ~Sprite() {}
 protected:
+	void ImGuiDrawInternal();
 	Texture2D mTexture;
 	Vector2 mPosition;
 	Vector2 mScale;
@@ -63,7 +65,6 @@ protected:
 private:
 	bool mUsingTexture;
 	const size_t mId;
-
 	inline static size_t sId = 0;
 };
 

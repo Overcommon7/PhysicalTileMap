@@ -68,7 +68,7 @@ void Selection::Update(SceneView* const sceneView, const TileSelector* const til
 	if (hasSelection)
 	{
 		if (ImGui::IsKeyPressed(ImGuiKey_Delete))
-			DeleteTilesFromSelection(sceneView->project);
+			DeleteTilesFromSelection(sceneView->mProject);
 
 		if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
 		{
@@ -77,9 +77,9 @@ void Selection::Update(SceneView* const sceneView, const TileSelector* const til
 
 			if (sceneView->IsInsideTexture(sceneView->GetMousePosition()))
 			{
-				if (CheckCollisionPointRec(sceneView->GetMousePosition(), GetSelectionScreenRec(sceneView->gridToScreen)))
+				if (CheckCollisionPointRec(sceneView->GetMousePosition(), GetSelectionScreenRec(sceneView->mGridToScreen)))
 				{
-					FillSelectedTiles(sceneView->project, sceneView->currentTileData);
+					FillSelectedTiles(sceneView->mProject, sceneView->mCurrentTileData);
 				}
 				else
 				{
@@ -97,7 +97,7 @@ void Selection::RaylibDraw(SceneView* const sceneView)
 	if (!hasSelection)
 		return;
 
-	DrawRectangleLinesEx(GetSelectionScreenRec(sceneView->gridToScreen), sceneView->settings.gridThickness, RED);
+	DrawRectangleLinesEx(GetSelectionScreenRec(sceneView->mGridToScreen), sceneView->mSettings.gridThickness, RED);
 }
 
 void Selection::DeleteTilesFromSelection(Project* project)

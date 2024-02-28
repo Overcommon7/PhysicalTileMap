@@ -8,19 +8,19 @@
 
 void SceneView::SetProject(Project* project)
 {
-	this->project = project;
+	this->mProject = project;
 	SetWindowTitle(project->GetWindowTitle().c_str());
 }
 
 void SceneView::SetNewTileData(const TileData& data)
 {
-	currentTileData = data;
-	editorValues.selection.OnNewDataSelected(project, data);
+	mCurrentTileData = data;
+	mEditorValues.selection.OnNewDataSelected(mProject, data);
 }
 
 void SceneView::SetTileSelector(TileSelector* const tileSelector)
 {
-	this->tileSelector = tileSelector;
+	this->mTileSelector = tileSelector;
 }
 
 void SceneView::Initialize()
@@ -30,20 +30,20 @@ void SceneView::Initialize()
 			return this->GridToScreen(grid);
 		};
 
-	gridToScreen = GridToScreen;
+	mGridToScreen = GridToScreen;
 }
 
 void SceneView::RaylibDraw()
 {
-	if (project == nullptr)
+	if (mProject == nullptr)
 		return;
 
-	if (settings.showGrid)
+	if (mSettings.showGrid)
 		DrawGrid();
 
 	
-	project->Draw(ScreenToGrid(start, true), ScreenToGrid(end, true), gridToScreen);
-	editorValues.selection.RaylibDraw(this);
+	mProject->Draw(ScreenToGrid(mStart, true), ScreenToGrid(mEnd, true), mGridToScreen);
+	mEditorValues.selection.RaylibDraw(this);
 	DrawMiniTile();
 
 	
@@ -53,7 +53,7 @@ void SceneView::ImGuiDraw()
 {
 	if (ImGui::BeginMenuBar())
 	{
-		imGuiValues.isHoveringMenu = false;
+		mImGuiValues.isHoveringMenu = false;
 		DrawFileMenu();
 		DrawEditMenu();
 		DrawSettingsMenuItem();
@@ -61,21 +61,23 @@ void SceneView::ImGuiDraw()
 		ImGui::EndMenuBar();
 	}
 
-	if (project == nullptr)
+	if (mProject == nullptr)
 		return;
 
 	UpdateCamera();
 
-	if (!imGuiValues.isHoveringMenu && !editorValues.eyeDropper.IsActive())
+	if (!mImGuiValues.isHoveringMenu && !mEditorValues.eyeDropper.IsActive())
 		UpdateProject();
 
 	UpdateInputs();
+	Vector2Int gridPosition(ScreenToGrid(this->GetMousePosition(), true));
+	ImGui::Text("Mouse Grid Position: %i, %i", gridPosition.x, gridPosition.y);
 	ITextureWindow::ImGuiDraw();
 }
 
 void SceneView::Update()
 {
-	if (project == nullptr)
+	if (mProject == nullptr)
 		return;
 
 	UpdateStartAndEnd();
@@ -83,11 +85,11 @@ void SceneView::Update()
 
 void SceneView::UpdateInputs()
 {
-	editorValues.selection.Update(this, tileSelector);
-	editorValues.eyeDropper.Update();
+	mEditorValues.selection.Update(this, mTileSelector);
+	mEditorValues.eyeDropper.Update();
 
-	if (editorValues.eyeDropper.IsActive() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-		editorValues.eyeDropper.Select(project, tileSelector, ScreenToGrid(this->GetMousePosition(), true));
+	if (mEditorValues.eyeDropper.IsActive() && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+		mEditorValues.eyeDropper.Select(mProject, mTileSelector, ScreenToGrid(this->GetMousePosition(), true));
 }
 
 void SceneView::UpdateCamera()
@@ -100,14 +102,14 @@ void SceneView::UpdateCamera()
 		{
 			Vector2Int vec(ImGui::GetMouseDragDelta(ImGuiMouseButton_Middle));
 			ImGui::ResetMouseDragDelta(ImGuiMouseButton_Middle);
-			rayCamera.target = Vector2Add(rayCamera.target, (Vector2Scale(vec, settings.moveSpeed * (-1 / rayCamera.zoom))));
+			rayCamera.target = Vector2Add(rayCamera.target, (Vector2Scale(vec, mSettings.moveSpeed * (-1 / rayCamera.zoom))));
 		}
 
 		auto wheel = GetMouseWheelMoveV().y;
 
 		if (wheel != 0)
 		{
-			rayCamera.zoom += (wheel * Time::DeltaTime() * settings.zoomSpeed);
+			rayCamera.zoom += (wheel * Time::DeltaTime() * mSettings.zoomSpeed);
 			rayCamera.zoom = std::clamp(rayCamera.zoom, 0.5f, 5.f);
 		}
 	}
@@ -116,19 +118,19 @@ void SceneView::UpdateCamera()
 void SceneView::DrawGrid()
 {
 	const Camera2D& rayCamera = camera.GetRaylibCamera();
-	const int thickness = settings.showGrid ? settings.gridThickness : 0;
+	const int thickness = mSettings.showGrid ? mSettings.gridThickness : 0;
 
-	const Vector2Int tileSize(project->GetTileSize() + thickness);	
-	const Vector2Int dimensions(end - start + tileSize);
+	const Vector2Int tileSize(mProject->GetTileSize() + thickness);	
+	const Vector2Int dimensions(mEnd - mStart + tileSize);
 
-	for (int x = start.x - (start.x % tileSize.x) ; x < end.x; x += tileSize.x)
+	for (int x = mStart.x - (mStart.x % tileSize.x) ; x < mEnd.x; x += tileSize.x)
 	{
-		DrawRectangle(x, start.y, thickness, dimensions.y, settings.gridColor);
+		DrawRectangle(x, mStart.y, thickness, dimensions.y, mSettings.gridColor);
 	}
 
-	for (int y = start.y - (start.y % tileSize.y) ; y < end.y; y += tileSize.y)
+	for (int y = mStart.y - (mStart.y % tileSize.y) ; y < mEnd.y; y += tileSize.y)
 	{
-		DrawRectangle(start.x, y, dimensions.x, thickness, settings.gridColor);
+		DrawRectangle(mStart.x, y, dimensions.x, thickness, mSettings.gridColor);
 	}
 }
 
@@ -136,12 +138,12 @@ void SceneView::UpdateStartAndEnd()
 {
 	const Camera2D& rayCamera = camera.GetRaylibCamera();
 	const Vector2Int resolution(camera.GetResolution());
-	const Vector2Int tileSize(project->GetTileSize());
+	const Vector2Int tileSize(mProject->GetTileSize());
 	const Vector2Int first((int)rayCamera.target.x % tileSize.x, (int)rayCamera.target.y % tileSize.y);
 
 
-	start = camera.TransformPoint(first - tileSize);
-	end = camera.TransformPoint(resolution + tileSize);
+	mStart = camera.TransformPoint(first - tileSize);
+	mEnd = camera.TransformPoint(resolution + tileSize);
 }
 
 void SceneView::UpdateProject()
@@ -157,18 +159,18 @@ void SceneView::UpdateProject()
 	if ((left || right) && IsInsideTexture(::GetMousePosition()))
 	{	
 		Vector2Int gridPosition(ScreenToGrid(this->GetMousePosition(), true));
-		if (left && !editorValues.selection.HasSelection())
-			project->SetTile(gridPosition, currentTileData);
+		if (left && !mEditorValues.selection.HasSelection())
+			mProject->SetTile(gridPosition, mCurrentTileData);
 		else if (right)
 		{
-			if (editorValues.selection.HasSelection())
+			if (mEditorValues.selection.HasSelection())
 			{
-				editorValues.selection.DeleteTilesFromSelection(project);
-				editorValues.selection.CancelSelection();
+				mEditorValues.selection.DeleteTilesFromSelection(mProject);
+				mEditorValues.selection.CancelSelection();
 			}	
 			else
 			{
-				project->RemoveTile(gridPosition);
+				mProject->RemoveTile(gridPosition);
 			}
 		}
 			
@@ -180,17 +182,17 @@ void SceneView::DrawSettingsMenuItem()
 	if (ImGui::BeginMenu("Settings"))
 	{
 		if (ImGui::IsItemHovered())
-			imGuiValues.isHoveringMenu = true;
+			mImGuiValues.isHoveringMenu = true;
 
-		ImGui::DragFloat("Camera Zoom Speed", &settings.zoomSpeed, 0.25f, 0.25f, 10.f);
-		ImGui::DragFloat("Camera Move Speed", &settings.moveSpeed, 0.005f, 0.005f, 10.f);
-		ImGui::DragInt("Grid Thickness", &settings.gridThickness, 1.f, 1.f, 6);
+		ImGui::DragFloat("Camera Zoom Speed", &mSettings.zoomSpeed, 0.25f, 0.25f, 10.f);
+		ImGui::DragFloat("Camera Move Speed", &mSettings.moveSpeed, 0.005f, 0.005f, 10.f);
+		ImGui::DragInt("Grid Thickness", &mSettings.gridThickness, 1.f, 1.f, 6);
 		{
-			auto color = Convert(settings.gridColor);
+			auto color = Convert(mSettings.gridColor);
 			if (ImGui::ColorEdit4("Grid Color", &color.x))
-				settings.gridColor = Convert(color);
+				mSettings.gridColor = Convert(color);
 		}
-		ImGui::Checkbox("Draw Grid", &settings.showGrid);
+		ImGui::Checkbox("Draw Grid", &mSettings.showGrid);
 		ImGui::EndMenu();
 
 
@@ -202,14 +204,11 @@ void SceneView::DrawDebugMenuItem()
 	if (ImGui::BeginMenu("Debug"))
 	{
 		if (ImGui::IsItemHovered())
-			imGuiValues.isHoveringMenu = true;
+			mImGuiValues.isHoveringMenu = true;
 
-		Vector2Int gridPosition(ScreenToGrid(this->GetMousePosition(), true));
-
-		ImGui::Text("Start: %i, %i", start.x, start.y);
-		ImGui::Text("End: %i, %i", end.x, end.y);
-		ImGui::Text("Mouse Grid Position: %i, %i", gridPosition.x, gridPosition.y);
-		ImGui::Text("Is Menu Hovered: %s", imGuiValues.isHoveringMenu ? "true" : "false");
+		ImGui::Text("Start: %i, %i", mStart.x, mStart.y);
+		ImGui::Text("End: %i, %i", mEnd.x, mEnd.y);
+		ImGui::Text("Is Menu Hovered: %s", mImGuiValues.isHoveringMenu ? "true" : "false");
 		DrawDebugMenuItems();
 		ImGui::EndMenu();
 	}
@@ -221,16 +220,16 @@ void SceneView::DrawFileMenu()
 	if (ImGui::BeginMenu("File"))
 	{
 		if (ImGui::IsItemHovered())
-			imGuiValues.isHoveringMenu = true;
+			mImGuiValues.isHoveringMenu = true;
 
 		if (ImGui::Button("Save"))
-			project->Save();
+			mProject->Save();
 
 		if (ImGui::Button("Save As"))
 		{
-			auto path = project->GetSavePath();
+			auto path = mProject->GetSavePath();
 			path = path.relative_path() / (path.stem().string() + "Copy.png");
-			project->SaveAs(path);
+			mProject->SaveAs(path);
 		}
 		
 		if (ImGui::Button("Quit"))
@@ -246,13 +245,13 @@ void SceneView::DrawEditMenu()
 		return;
 
 	if (ImGui::IsItemHovered())
-		imGuiValues.isHoveringMenu = true;
+		mImGuiValues.isHoveringMenu = true;
 
 	if (ImGui::Button("Clear"))
-		project->Clear();
+		mProject->Clear();
 
 	if (ImGui::Button("Eye Dropper"))
-		editorValues.eyeDropper.Activate();
+		mEditorValues.eyeDropper.Activate();
 
 	if (ImGui::Button("Play"))
 		App::ChangeState(App::State::Gameplay);
@@ -263,16 +262,16 @@ void SceneView::DrawEditMenu()
 
 void SceneView::DrawMiniTile()
 {
-	const auto& texture = tileSelector->GetCurrentTexture();
+	const auto& texture = mTileSelector->GetCurrentTexture();
 	const auto position(this->GetMousePosition());
-	const auto tileSize(project->GetTileSize());
-	const auto texturePosition = currentTileData.imagePosition * tileSize;
+	const auto tileSize(mProject->GetTileSize());
+	const auto texturePosition = mCurrentTileData.imagePosition * tileSize;
 
 	const Rectangle source(texturePosition.x, texturePosition.y, tileSize.x, tileSize.y);
 	const Rectangle dest(position.x - 15.f, position.y - 15.f, 25.f, 25.f);
 	const Vector2 origin = { 0.0f, 0.0f };
 
-	DrawTexturePro(texture, source, dest, origin, 0.f, currentTileData.tint);
+	DrawTexturePro(texture, source, dest, origin, 0.f, mCurrentTileData.tint);
 }
 
 Vector2Int SceneView::ScreenToGrid(Vector2Int screenPosition, bool isTexturePosition)
@@ -280,8 +279,8 @@ Vector2Int SceneView::ScreenToGrid(Vector2Int screenPosition, bool isTexturePosi
 	if (!isTexturePosition)
 		screenPosition = GetTexturePoint(screenPosition);
 
-	const int thickness = settings.showGrid ? settings.gridThickness : 0;
-	const auto tileSize = (project->GetTileSize() + thickness);
+	const int thickness = mSettings.showGrid ? mSettings.gridThickness : 0;
+	const auto tileSize = (mProject->GetTileSize() + thickness);
 
 	if (screenPosition.x < 0)
 		screenPosition.x -= tileSize.x;
@@ -293,5 +292,5 @@ Vector2Int SceneView::ScreenToGrid(Vector2Int screenPosition, bool isTexturePosi
 
 Vector2Int SceneView::GridToScreen(Vector2Int gridPosition)
 {	
-	return Vector2Int((gridPosition * project->GetTileSize()) + ((gridPosition + 1) * settings.gridThickness));
+	return Vector2Int((gridPosition * mProject->GetTileSize()) + ((gridPosition + 1) * mSettings.gridThickness));
 }

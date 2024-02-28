@@ -3,32 +3,38 @@
 #include "Game/Physics/PhysicsWorld.h"
 
 #include "Windows/GameWindow.h"
+#include "Windows/DebugWindow.h"
 
 
 Game::Game()
 {
-	game = new GameWindow("Game", Vector2Int(1920, 1080));
-	windows.emplace_back(game);
+	mGame = new GameWindow("Game", Vector2Int(1920, 1080));
+	mDebug = new DebugWindow("Debug");
+
+	mWindows.emplace_back(mGame);
+	mWindows.emplace_back(mDebug);
 }
 
 void Game::OnStart(Project* project)
 {
 	auto GridToScreen = [this](Vector2Int position) {
-		return game->GridToScreen(position);
+		return mGame->GridToScreen(position);
 		};
 
 	auto ScreenToGrid = [this](Vector2Int position) {
-		return game->ScreenToGrid(position);
+		return mGame->ScreenToGrid(position);
 		};
 
 	PhysicsWorld::Initialize(project, ScreenToGrid, GridToScreen);
 
-	game->Start(project);
+	mGame->Start(project);
+	mDebug->SetPlayer(mGame->GetPlayer());
 }
 
 void Game::Stop()
 {
-	game->Stop();
+	mDebug->SetPlayer(nullptr);
+	mGame->Stop();
 
 	PhysicsWorld::Terminate();
 }
@@ -42,6 +48,5 @@ void Game::Update()
 void Game::RaylibDraw()
 {
 	ILayer::RaylibDraw();
-	PhysicsWorld::DebugDraw();
 }
 

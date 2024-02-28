@@ -14,8 +14,8 @@ Editor::Editor()
 	sceneView->SetProject(currentProject.get());
 	tileSelector->SetProject(currentProject.get());
 
-	windows.emplace_back(sceneView);	
-	windows.emplace_back(tileSelector);	
+	mWindows.emplace_back(sceneView);	
+	mWindows.emplace_back(tileSelector);	
 
 	auto OnDataChanged = [this](TileData& tileData) {
 		sceneView->SetNewTileData(tileData);

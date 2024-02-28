@@ -11,8 +11,8 @@ struct Collision
 	Collision(Rigidbody* rigidbody, Rectangle overlap)
 		: rigidbody(rigidbody), overlap(overlap) 
 	{
-		assert(rigidbody != nullptr, "Collision: collision cannot have an empty sprite");
-		assert(overlap.width != -1 && overlap.height != -1, "Collision: collision must have a valid overlap");
+		assert(rigidbody != nullptr);
+		assert(overlap.width != -1 && overlap.height != -1);
 	}
 };
 
@@ -39,7 +39,6 @@ public:
 	void RemoveLayerFromLayerMask(size_t layer);
 	const vector<size_t>& GetLayerMask() const { return mLayerMask; }
 
-
 	Vector2 GetVelocity() const { return mVelocity; }
 	float GetGravityScale() const { return mGravityScale; }
 	size_t GetLayer() const { return mLayer; }
@@ -49,7 +48,9 @@ public:
 	bool IsActive() const { return mIsActive; }
 	bool IsGrounded() const { return mIsGrounded; }
 
-	const vector<Collision>& SolveCollisions() const { return mCollisions; }
+	const vector<Collision>& GetCollisions() const { return mCollisions; }
+
+	void ImGuiDraw();
 private:
 	Vector2 mVelocity;
 	float mGravityScale;

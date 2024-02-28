@@ -4,6 +4,8 @@
 #include "../Player/Player.h"
 #include "../../Editor/Project/Project.h"
 
+#include "Game/Physics/PhysicsWorld.h"
+
 
 
 #include "App/App.h"
@@ -12,7 +14,7 @@ GameWindow::ITextureWindowConstructor(GameWindow)
 	, mPlayer(nullptr)
 	, mProject(nullptr)
 {
-	hasMenuBar = true;
+	mHasMenuBar = true;
 }
 
 void GameWindow::Start(Project* project)
@@ -20,7 +22,7 @@ void GameWindow::Start(Project* project)
 	mProject = project;
 	
 	auto position(GridToScreen(project->GetPlayerStartPosition()));
-	auto size(project->GetTileSize() * 0.9f);
+	auto size(project->GetTileSize() * 0.95f);
 	mPlayer = new Player(position, size);
 }
 
@@ -45,6 +47,9 @@ void GameWindow::RaylibDraw()
 		};
 
 	mProject->Draw(ScreenToGrid(mStart), ScreenToGrid(mEnd), GridToScreen);
+	mPlayer->Draw();
+
+	PhysicsWorld::DebugDraw();
 }
 
 void GameWindow::ImGuiDraw()
@@ -57,6 +62,7 @@ void GameWindow::ImGuiDraw()
 			
 		ImGui::EndMenuBar();
 	}
+
 
 	ITextureWindow::ImGuiDraw();
 }

@@ -14,8 +14,10 @@ class SceneView final : public ITextureWindow
 {
 public:
 	ITextureWindowConstructor(SceneView) 
+		, mProject(nullptr)
+		, mTileSelector(nullptr)
 	{
-		hasMenuBar = true;
+		mHasMenuBar = true;
 	}
 
 	void SetProject(Project* project);
@@ -66,15 +68,15 @@ private:
 	};
 private:
 
-	Settings settings;
-	ImGuiValues imGuiValues;
-	EditorValues editorValues;
-	Project* project;
-	Vector2Int start;
-	Vector2Int end;
-	TileData currentTileData;
-	TileSelector* tileSelector;
-	std::function<Vector2Int(Vector2Int)> gridToScreen;
+	Settings mSettings;
+	ImGuiValues mImGuiValues;
+	EditorValues mEditorValues;
+	Project* mProject;
+	Vector2Int mStart;
+	Vector2Int mEnd;
+	TileData mCurrentTileData;
+	TileSelector* mTileSelector;
+	std::function<Vector2Int(Vector2Int)> mGridToScreen;
 
 	friend class Selection;
 };

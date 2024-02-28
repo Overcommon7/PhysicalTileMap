@@ -18,6 +18,8 @@ public:
 
 	Vector2Int ScreenToGrid(Vector2Int screenPosition) const;
 	Vector2Int GridToScreen(Vector2Int gridPosition) const;
+
+	Player* GetPlayer() { return mPlayer; }
 private:
 	Project* mProject;
 	Player* mPlayer;

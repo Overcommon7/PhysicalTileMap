@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Sprite.h"
 
+#include "ImGuiUtilities/ImGuiUtils.h"
+
 void Sprite::Draw()
 {
 	if (mUsingTexture)
@@ -51,4 +53,19 @@ Sprite::Sprite(Type type, Vector2 position, Vector2 size, Color color)
 	mColor(color), mFlipX(false), mFlipY(false), mId(sId++)
 {
 
+}
+
+void Sprite::ImGuiDrawInternal()
+{
+	ImGuiUtils::SerializeVector2("Position", mPosition);
+	ImGuiUtils::SerializeVector2("Scale", mScale);
+	ImGuiUtils::SerializeFloat("Rotation", mRotation);
+	ImGuiUtils::SerializeBool("Flip X", mFlipX);
+	ImGuiUtils::SerializeBool("Flip Y", mFlipY);
+	ImGuiUtils::SerializeColor("Color", mColor);
+	
+
+	ImGuiUtils::DrawBool("Use Texture", mUsingTexture);
+	ImGui::Text("id: %zu", mId);
+	ImGui::Text("Type: %s", magic_enum::enum_name(mType).data());
 }

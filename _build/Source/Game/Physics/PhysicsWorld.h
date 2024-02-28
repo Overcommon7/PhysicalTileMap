@@ -20,6 +20,8 @@ public:
 	static void AddRigidbody(Rigidbody* rigidbody);
 	static void RemoveRigidbody(Rigidbody* rigidbody);
 	static void ChangePhysicsLayer(Rigidbody* rigidbody, size_t layer);
+
+	static Action<const float> OnFixedTimeStep() { return sWorld->mFixedTimeStepCalls; }
 private:
 
 	float mTimer = 0.f;
@@ -28,6 +30,8 @@ private:
 
 	std::function<Vector2Int(Vector2Int)> mScreenToGrid = {};
 	std::function<Vector2Int(Vector2Int)> mGridToScreen = {};
+	Action<const float> mFixedTimeStepCalls{ false };
+
 
 	void InternalUpdate();
 	void InternalDebugDraw();

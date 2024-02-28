@@ -110,6 +110,7 @@ void PhysicsWorld::InternalUpdate()
 	mTimer += Time::DeltaTime();
 	while (mTimer >= TIME_STEP)
 	{
+		mFixedTimeStepCalls.Invoke(TIME_STEP);
 		DoPhysicsStep();
 		mTimer -= TIME_STEP;
 	}

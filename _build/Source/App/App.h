@@ -19,15 +19,15 @@ public:
 	static void ChangeState(State state);
 	static void Close();
 private:
-	static inline bool isCreated = false;
-	static inline App* instance = nullptr;
-	vector<unique_ptr<ILayer>> layers;
+	static inline bool sIsCreated = false;
+	static inline App* sInstance = nullptr;
+	vector<unique_ptr<ILayer>> mLayers;
 
-	Game* game;
-	Editor* editor;
+	Game* mGame;
+	Editor* mEditor;
 
-	std::optional<State> queriedStateChange;
-	State state;
-	bool shouldClose;
+	std::optional<State> mQueriedStateChange;
+	State mState;
+	bool mShouldClose;
 };
 

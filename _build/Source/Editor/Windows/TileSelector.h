@@ -10,30 +10,30 @@ class TileSelector : public ITextureWindow
 {
 public:
 	ITextureWindowConstructor(TileSelector)
-		, texture({})
-		, project(nullptr)
+		, mTexture({})
+		, mProject(nullptr)
 	{
-		hasMenuBar = true;
+		mHasMenuBar = true;
 		
 		
 	}
 	void SetProject(Project* project);
 
 	const TileData& GetSelectedTileData() const;
-	bool IsNewDataSelected() const { return newDataSelected; }
+	bool IsNewDataSelected() const { return mNewDataSelected; }
 	
 	void SelectNewTile(const TileData& data);
 	const Texture2D& GetCurrentTexture();
 
 	Action<TileData> OnDataChanged;
 private:
-	Project* project;
-	vector<const FileData*> fileData;
+	Project* mProject;
+	vector<const FileData*> mFileData;
 
-	TileData currentTile;
-	Texture2D texture;
-	bool newDataSelected = false;
-	bool newTileSelected = false;
+	TileData mCurrentTile;
+	Texture2D mTexture;
+	bool mNewDataSelected = false;
+	bool mNewTileSelected = false;
 
 	void ImGuiDraw() override;
 	void RaylibDraw() override;
@@ -49,6 +49,6 @@ private:
 
 	Vector2Int ScreenToGrid(Vector2Int screenPosition) const;
 
-	const int spacing = 2;
+	const static int sSpacing = 2;
 };
 

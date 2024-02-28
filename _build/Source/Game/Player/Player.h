@@ -9,13 +9,18 @@ class Player : public Sprite
 {
 public:
 	Player(Vector2 position, Vector2 size);
+	~Player();
 	void Update();
+
+	void ImGuiDraw();
 private:
 	Controls mControls;
 	Keys mKeys;
 	Rigidbody mRigidbody;
 	Movement::Values mMovementValues;
 
-	friend class Movement;
+	std::function<void(const float)> mFixedUpdate;
+
+	friend struct Movement;
 };
 

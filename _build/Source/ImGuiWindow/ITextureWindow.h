@@ -8,6 +8,8 @@ public:
     virtual void Initialize() override {}
     virtual void Terminate() override;
 
+    virtual void Update() override;
+
     virtual void BeginDraw();
     virtual void EndDraw();
     virtual void ImGuiDraw() override;

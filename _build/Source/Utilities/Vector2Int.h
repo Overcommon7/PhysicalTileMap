@@ -72,9 +72,21 @@ struct Vector2Int final
 	{
 		return { x * s, y * s };
 	}
-	Vector2Int operator/(const int s) const
+	Vector2Int operator/(const float s) const
 	{
 		return { x / s, y / s };
+	}
+	Vector2Int operator+(const float s) const
+	{
+		return { x + s, y + s };
+	}
+	Vector2Int operator-(const float s) const
+	{
+		return { x - s, y - s };
+	}
+	Vector2Int operator*(const float s) const
+	{
+		return { x * s, y * s };
 	}
 	friend Vector2Int operator+(const Vector2& vec, const Vector2Int& iVec)
 	{

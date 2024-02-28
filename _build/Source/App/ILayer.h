@@ -15,6 +15,6 @@ public:
 	virtual void ImGuiDraw();
 protected:
 
-	vector<unique_ptr<IWindow>> windows;
+	vector<unique_ptr<IWindow>> mWindows;
 };
 

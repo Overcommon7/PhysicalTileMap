@@ -8,22 +8,22 @@ struct FileData
 	FileData(const fs::path& filepath);
 	static void Terminate();
 
-	fs::path filepath;
-	string name;
-	size_t hash;
-	Texture2D texture;
+	fs::path mFilepath;
+	string mName;
+	size_t mHash;
+	Texture2D mTexture;
 private:
-	bool loadedTexture;
+	bool mLoadedTexture;
 	
-	inline static unordered_map<size_t, Texture2D> textures;
+	inline static unordered_map<size_t, Texture2D> sTextures;
 	
 };
 
 class Project
 {
 public:
-	Vector2Int GetTileSize() const { return tileSize; }
-	Vector2Int GetPlayerStartPosition() const { return startPosition; }
+	Vector2Int GetTileSize() const { return mTileSize; }
+	Vector2Int GetPlayerStartPosition() const { return mStartPosition; }
 
 	void SetTile(Vector2Int position, const TileData& data);
 	void RemoveTile(Vector2Int position);
@@ -33,20 +33,20 @@ public:
 	Project(const fs::path& projectFile);
 	void Save();
 	void SaveAs(const fs::path& path);
-	void Clear() { tiles.clear(); }
+	void Clear() { mTiles.clear(); }
 
 	std::optional<TileData> GetTile(Vector2Int gridPosition) const;
 
-	const fs::path& GetSavePath() const { return projectFile; }
-	string GetWindowTitle() const { return "OverTiled - " + projectFile.stem().string(); }
+	const fs::path& GetSavePath() const { return mProjectFile; }
+	string GetWindowTitle() const { return "OverTiled - " + mProjectFile.stem().string(); }
 private:
 		
-	unordered_map<Vector2Int, Tile, Vector2IntHash> tiles;
-	unordered_map<size_t, FileData> fileData;
-	fs::path projectFile;
-	bool isSaved;
-	Vector2Int tileSize;
-	Vector2Int startPosition;
+	unordered_map<Vector2Int, Tile, Vector2IntHash> mTiles;
+	unordered_map<size_t, FileData> mFileData;
+	fs::path mProjectFile;
+	bool mIsSaved;
+	Vector2Int mTileSize;
+	Vector2Int mStartPosition;
 
 	void LoadTilesFromFile(size_t hashValue, fstream& inFile);
 	Color IntToColor(int value);

@@ -6,6 +6,11 @@ void ITextureWindow::Terminate()
 	camera.Terminate();
 }
 
+void ITextureWindow::Update()
+{
+	camera.Update();
+}
+
 void ITextureWindow::BeginDraw()
 {
 	camera.BeginDrawing();

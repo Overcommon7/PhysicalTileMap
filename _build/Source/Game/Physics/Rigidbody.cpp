@@ -2,6 +2,7 @@
 #include "Rigidbody.h"
 
 #include "PhysicsWorld.h"
+#include "ImGuiUtilities/ImGuiUtils.h"
 
 Rigidbody::Rigidbody(Sprite* sprite, size_t layer, bool useGravity, bool isTrigger)
 	: mSprite(sprite)
@@ -18,7 +19,7 @@ Rigidbody::Rigidbody(Sprite* sprite, size_t layer, bool useGravity, bool isTrigg
 	, mIsTrigger(isTrigger)
 {
 	PhysicsWorld::AddRigidbody(this);
-	assert(sprite != nullptr, "Rigidbody: rigidbody cannot have a null sprite");
+	assert(sprite != nullptr);
 }
 
 Rigidbody::~Rigidbody()
@@ -40,7 +41,6 @@ void Rigidbody::ApplyForceX(float x)
 void Rigidbody::ApplyForceY(float y)
 {
 	mVelocity.y += y;
-	mDecelerate = false;
 }
 
 void Rigidbody::SetLayer(size_t layer)
@@ -69,4 +69,20 @@ Sprite* Rigidbody::GetSprite()
 const Sprite* Rigidbody::GetSprite() const
 {
 	return mSprite;
+}
+
+void Rigidbody::ImGuiDraw()
+{
+	ImGuiUtils::SerializeBool("Is Active", mIsActive);
+	ImGuiUtils::SerializeVector2("Velocity", mVelocity, 0.1f);
+	ImGuiUtils::SerializeFloat("Graivty Scale", mGravityScale, 0.1f);
+	ImGuiUtils::SerializeFloat("Deceleration Speed", mDecerationSpeed, 0.05f);
+	ImGuiUtils::SerializeBool("Use Gravity", mUseGravity);
+	ImGuiUtils::SerializeBool("Use Deceleration", mUseDeceleration);
+	ImGuiUtils::SerializeBool("Collide With Tilemap", mCollideWithTilemap);
+	ImGuiUtils::SerializeBool("Is Trigger", mIsTrigger);
+
+	ImGuiUtils::DrawBool("Is Decelerating", mDecelerate);
+	ImGuiUtils::DrawBool("Is Grounded", mIsGrounded);
+	ImGui::Text("LayerID: %zu", mLayer);
 }
