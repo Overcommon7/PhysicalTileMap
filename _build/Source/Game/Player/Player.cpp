@@ -13,21 +13,21 @@ Player::Player(Vector2 position, Vector2 size)
 {
 
 
-	/*mFixedUpdate = [this](const float fixedDeltaTime) {
+	mFixedUpdate = [this](const float fixedDeltaTime) {
 		Movement::Update(this, mMovementValues, fixedDeltaTime);
 		};
 
-	PhysicsWorld::OnFixedTimeStep() += mFixedUpdate;*/
+	PhysicsWorld::OnFixedTimeStep() += mFixedUpdate;
 }
 
 Player::~Player()
 {
-	//PhysicsWorld::OnFixedTimeStep() -= mFixedUpdate;
+	PhysicsWorld::OnFixedTimeStep() -= mFixedUpdate;
 }
 
 void Player::Update()
 {
-	//InputHandling::Update(mControls, mKeys);	
+	InputHandling::Update(mControls, mKeys);	
 }
 
 void Player::ImGuiDraw()
@@ -37,4 +37,5 @@ void Player::ImGuiDraw()
 
 	Sprite::ImGuiDrawInternal();
 	mRigidbody.ImGuiDraw();
+	Movement::ImGuiDraw(mMovementValues);
 }

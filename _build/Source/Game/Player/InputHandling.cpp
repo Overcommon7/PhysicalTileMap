@@ -6,6 +6,7 @@ void InputHandling::Update(Controls& controls, const Keys& keys)
 	controls.mIsHoldingJump = IsDown(keys.jump);
 	controls.mIsHoldingLeft = IsDown(keys.left);
 	controls.mIsHoldingRight = IsDown(keys.right);
+	controls.mIsHoldingRun = IsDown(keys.run);
 
 	controls.mThisFrame.jumpPressed = IsPressedThisFrame(keys.jump);
 	controls.mThisFrame.leftPressed = IsPressedThisFrame(keys.left);

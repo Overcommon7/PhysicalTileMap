@@ -21,8 +21,6 @@ private:
 	static bool TryGetRectangleOverlap(Rectangle rec1, Rectangle rec2, Rectangle& overlap);
 
 	static void SolveTopRightCorner(Rigidbody* rigidbody, Vector2Int corner, Vector2Int offset, Conversion gridToScreen, bool& stopX, bool& stopY);
-	static void SolveTopLeftCorner(Rigidbody* rigidbody, Vector2Int corner, Vector2Int offset, Conversion gridToScreen, bool& stopX, bool& stopY);
-	static void SolveBottomRightCorner(Rigidbody* rigidbody,Vector2Int corner, Vector2Int offset, Conversion gridToScreen, bool& stopX, bool& stopY);
 	static void SolveBottomLeftCorner(Rigidbody* rigidbody, Vector2Int corner, Vector2Int offset, Conversion gridToScreen, bool& stopX, bool& stopY);
 
 	static void SolveCorner(

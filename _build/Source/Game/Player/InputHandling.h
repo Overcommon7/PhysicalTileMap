@@ -14,6 +14,7 @@ struct Controls
 	bool mIsHoldingRight = false;
 	bool mIsHoldingLeft = false;
 	bool mIsHoldingJump = false;
+	bool mIsHoldingRun = false;
 
 	ThisFrame mThisFrame{};
 };
@@ -23,6 +24,7 @@ struct Keys
 	std::array<KeyboardKey, 2> jump = { KEY_W, KEY_UP };
 	std::array<KeyboardKey, 2> left = { KEY_A, KEY_LEFT };
 	std::array<KeyboardKey, 2> right = { KEY_D, KEY_RIGHT }; 
+	std::array<KeyboardKey, 2> run = { KEY_LEFT_SHIFT, KEY_KP_0 }; 
 };
 
 struct InputHandling

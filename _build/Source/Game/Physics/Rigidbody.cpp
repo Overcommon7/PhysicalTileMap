@@ -77,7 +77,9 @@ void Rigidbody::ImGuiDraw()
 	ImGuiUtils::SerializeVector2("Velocity", mVelocity, 0.1f);
 	ImGuiUtils::SerializeFloat("Graivty Scale", mGravityScale, 0.1f);
 	ImGuiUtils::SerializeFloat("Deceleration Speed", mDecerationSpeed, 0.05f);
-	ImGuiUtils::SerializeBool("Use Gravity", mUseGravity);
+	if (ImGuiUtils::SerializeBool("Use Gravity", mUseGravity) && !mUseGravity)
+		mVelocity.y = 0;
+
 	ImGuiUtils::SerializeBool("Use Deceleration", mUseDeceleration);
 	ImGuiUtils::SerializeBool("Collide With Tilemap", mCollideWithTilemap);
 	ImGuiUtils::SerializeBool("Is Trigger", mIsTrigger);

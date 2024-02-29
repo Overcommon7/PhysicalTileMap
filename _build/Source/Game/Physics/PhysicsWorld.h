@@ -21,7 +21,7 @@ public:
 	static void RemoveRigidbody(Rigidbody* rigidbody);
 	static void ChangePhysicsLayer(Rigidbody* rigidbody, size_t layer);
 
-	static Action<const float> OnFixedTimeStep() { return sWorld->mFixedTimeStepCalls; }
+	static Action<const float>& OnFixedTimeStep() { return sWorld->mFixedTimeStepCalls; }
 private:
 
 	float mTimer = 0.f;
