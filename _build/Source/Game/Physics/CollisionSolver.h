@@ -20,8 +20,10 @@ private:
 
 	static bool TryGetRectangleOverlap(Rectangle rec1, Rectangle rec2, Rectangle& overlap);
 
-	static void SolveTopRightCorner(Rigidbody* rigidbody, Vector2Int corner, Vector2Int offset, Conversion gridToScreen, bool& stopX, bool& stopY);
-	static void SolveBottomLeftCorner(Rigidbody* rigidbody, Vector2Int corner, Vector2Int offset, Conversion gridToScreen, bool& stopX, bool& stopY);
+	static void SolveTopCollision(Rigidbody* rigidbody, Vector2Int corner, Vector2Int offset, Conversion gridToScreen, bool& stopX, bool& stopY);
+	static void SolveBottomCollision(Rigidbody* rigidbody, Vector2Int corner, Vector2Int offset, Conversion gridToScreen, bool& stopX, bool& stopY);
+	static void SolveLeftCollision(Rigidbody* rigidbody, Vector2Int corner, Vector2Int offset, Conversion gridToScreen, bool& stopX, bool& stopY);
+	static void SolveRightCollision(Rigidbody* rigidbody, Vector2Int corner, Vector2Int offset, Conversion gridToScreen, bool& stopX, bool& stopY);
 
 	static void SolveCorner(
 		const std::function<void(Rigidbody*, Vector2Int, Vector2Int, Conversion, bool&, bool&)> solver,

@@ -14,7 +14,11 @@ public:
 	void Update() override;
 	void RaylibDraw() override;
 private:
+
+	void HandleHotkeys();
+
 	GameWindow* mGame;
 	DebugWindow* mDebug;
+	Project* mProject;
 };
 

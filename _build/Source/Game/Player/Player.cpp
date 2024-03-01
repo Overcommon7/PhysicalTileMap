@@ -8,13 +8,14 @@ Player::Player(Vector2 position, Vector2 size)
 	: Sprite(Sprite::Type::Player, position, size, PINK)
 	, mRigidbody(this, PhysicsLayer::PLAYER)
 	, mControls({})
-	, mMovementValues({})
+	, mMovementValues("Debug/MovementValues.txt")
 	, mKeys({})
 {
 
 
 	mFixedUpdate = [this](const float fixedDeltaTime) {
-		Movement::Update(this, mMovementValues, fixedDeltaTime);
+		if (mDebug.useInputs)
+			Movement::FixedUpdate(this, mMovementValues, fixedDeltaTime);
 		};
 
 	PhysicsWorld::OnFixedTimeStep() += mFixedUpdate;
@@ -27,13 +28,19 @@ Player::~Player()
 
 void Player::Update()
 {
-	InputHandling::Update(mControls, mKeys);	
+	if (!mDebug.useInputs)
+		return;
+
+	InputHandling::Update(mControls, mKeys);
+	Movement::Update(this, mMovementValues);
 }
 
 void Player::ImGuiDraw()
 {
 	if (!ImGui::CollapsingHeader("Player"))
 		return;
+
+	ImGuiUtils::SerializeBool("Use Inputs", mDebug.useInputs);
 
 	Sprite::ImGuiDrawInternal();
 	mRigidbody.ImGuiDraw();

@@ -4,9 +4,11 @@
 #include "Windows/SceneView.h"
 #include "Windows/TileSelector.h"
 
+#include "App/App.h"
+
 Editor::Editor()
 {
-	currentProject = std::make_unique<Project>("_build/Projects/Test/Test.txt");
+	currentProject = std::make_unique<Project>("Projects/Test/Test.txt");
 
 	sceneView = new SceneView("Scene View", { 1280, 720 });
 	tileSelector = new TileSelector("Tile Selector", { 360, 720 });
@@ -29,4 +31,20 @@ Editor::Editor()
 Editor::~Editor()
 {
 	FileData::Terminate();
+}
+
+void Editor::Update()
+{
+	ILayer::Update();
+
+	if (!IsKeyDown(KEY_LEFT_CONTROL) && !IsKeyDown(KEY_RIGHT_CONTROL))
+		return;
+
+	if (IsKeyPressed(KEY_P))
+	{
+		App::ChangeState(App::State::Gameplay);
+		return;
+	}
+	
+	
 }

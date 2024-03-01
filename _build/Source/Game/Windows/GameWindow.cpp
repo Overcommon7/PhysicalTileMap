@@ -35,6 +35,7 @@ void GameWindow::Stop()
 void GameWindow::Update()
 {
 	UpdateStartAndEnd();
+	mPlayer->Update();
 }
 
 void GameWindow::RaylibDraw()

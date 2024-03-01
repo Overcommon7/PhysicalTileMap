@@ -14,10 +14,16 @@ public:
 
 	void ImGuiDraw();
 private:
+	struct Debug
+	{
+		bool useInputs = true;
+	};
+
 	Controls mControls;
 	Keys mKeys;
 	Rigidbody mRigidbody;
 	Movement::Values mMovementValues;
+	Debug mDebug;
 
 	std::function<void(const float)> mFixedUpdate;
 

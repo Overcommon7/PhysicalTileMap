@@ -11,7 +11,8 @@ struct Movement
 	};
 	struct Values
 	{
-		float maxSpeed = 500;
+		float maxWalkingSpeed = 500;
+		float maxRunningSpeed = 500;
 		float walkingAcclerationSpeed = 50;
 		float runningAcclerationSpeed = 75;
 		float walkingDecclerationSpeed = 45;
@@ -27,20 +28,20 @@ struct Movement
 
 		Direction facing = Direction::Right;
 		Direction moving = Direction::None;
+
+		Values() = default;
+		Values(const fs::path& path);
+		void SaveToFile();
+
+
+	private:
+		const fs::path& mPath = "Debug/MovementValues.txt";
 	};
 public:
-	static void Update(Player* player, Values& values, const float timeStep);
+	static void Update(Player* player, Values& values);
+	static void FixedUpdate(Player* player, Values& values, const float timeStep);
 	static void ImGuiDraw(Values& values);
 private:
-	static void Move(Player* player, Values& values, const float timeStep);
-	static void Jump(Player* player, Values& values, const float timeStep);
-
-	static void TurnAround(Player* player, Values& values, const float timeStep);
-	static void ApplyHorizantalForce(Player* player, Values& values, const float timeStep);
-
-	static void ValidateJump(Player* player, Values& values, const float timeStep);
-	static void ApplyVerticalForce(Player* player, Values& values, const float timeStep);
-
-	
+	static void UpdateHoriantalMovement(Player* player, Values& values, const float timeStep);
 };
 

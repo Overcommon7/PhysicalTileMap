@@ -5,13 +5,14 @@
 class SceneView;
 class TileSelector;
 
-class Editor : public ILayer
+class Editor final : public ILayer
 {
 public:
 	Editor();
 	~Editor();
 
 	const TileSelector* const GetTileSelector() const { return tileSelector; }
+	void Update() override;
 private:
 	
 	SceneView* sceneView;
