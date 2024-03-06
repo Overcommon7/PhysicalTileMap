@@ -11,6 +11,11 @@ struct Movement
 	};
 	struct Values
 	{
+		struct Debug
+		{
+			bool applyForce = true;
+		};
+
 		float maxWalkingSpeed = 500;
 		float maxRunningSpeed = 500;
 		float walkingAcclerationSpeed = 50;
@@ -19,7 +24,8 @@ struct Movement
 		float runningDecclerationSpeed = 60;
 		float decclerationSpeed = 35;
 		float initialJumpForce = 600;
-		float maxAirTime = 3.1f;
+		float maintainedJumpForce = 50;
+		float maxAirTime = 0.45f;
 		
 
 		float timeOfJump = 0.f; 
@@ -28,6 +34,7 @@ struct Movement
 
 		Direction facing = Direction::Right;
 		Direction moving = Direction::None;
+		Debug mDebug;
 
 		Values() = default;
 		Values(const fs::path& path);
@@ -43,5 +50,7 @@ public:
 	static void ImGuiDraw(Values& values);
 private:
 	static void UpdateHoriantalMovement(Player* player, Values& values, const float timeStep);
+	static void ValidateJump(Player* player, Values& values);
+	static void DoJump(Player* player, Values& values, float fixedTimeStep);
 };
 

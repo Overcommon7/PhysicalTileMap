@@ -26,6 +26,7 @@
     <ClCompile Include="Source\Game\Physics\CollisionSolver.cpp" />
     <ClCompile Include="Source\ImGuiUtilities\ImGuiUtils.cpp" />
     <ClCompile Include="Source\Game\Windows\DebugWindow.cpp" />
+    <ClCompile Include="Source\Editor\Windows\SaveAsModal.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\pch.h" />
@@ -57,5 +58,6 @@
     <ClInclude Include="Source\Game\Physics\CollisionSolver.h" />
     <ClInclude Include="Source\ImGuiUtilities\ImGuiUtils.h" />
     <ClInclude Include="Source\Game\Windows\DebugWindow.h" />
+    <ClInclude Include="Source\Editor\Windows\SaveAsModal.h" />
   </ItemGroup>
 </Project>

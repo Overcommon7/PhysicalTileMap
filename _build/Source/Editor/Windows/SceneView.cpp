@@ -4,6 +4,9 @@
 #include "../Project/Project.h"
 #include "TileSelector.h"
 #include "App/App.h"
+#include "../Editor.h"
+
+#include "ImGuiUtilities/ImGuiUtils.h"
 
 
 void SceneView::SetProject(Project* project)
@@ -199,6 +202,23 @@ void SceneView::DrawSettingsMenuItem()
 	}
 }
 
+void SceneView::DrawPlayerMenu()
+{
+	if (!ImGui::BeginMenu("Player"))
+		return;
+
+	if (ImGui::IsItemHovered())
+		mImGuiValues.isHoveringMenu = true;
+
+	Vector2Int spawnPosition = mProject->GetPlayerStartPosition();
+	if (ImGuiUtils::SerializeInt2("Player Spawn Position", spawnPosition))
+		mProject->SetPlayerSpawnPosition(spawnPosition);
+
+
+	ImGui::EndMenu();
+	
+}
+
 void SceneView::DrawDebugMenuItem()
 {	
 	if (ImGui::BeginMenu("Debug"))
@@ -227,9 +247,11 @@ void SceneView::DrawFileMenu()
 
 		if (ImGui::Button("Save As"))
 		{
-			auto path = mProject->GetSavePath();
-			path = path.relative_path() / (path.stem().string() + "Copy.png");
-			mProject->SaveAs(path);
+			auto editor(App::GetLayer<Editor>());
+			if (editor.has_value())
+			{
+				editor->get().OpenSaveAsModal();
+			}
 		}
 		
 		if (ImGui::Button("Quit"))
@@ -273,6 +295,8 @@ void SceneView::DrawMiniTile()
 
 	DrawTexturePro(texture, source, dest, origin, 0.f, mCurrentTileData.tint);
 }
+
+
 
 Vector2Int SceneView::ScreenToGrid(Vector2Int screenPosition, bool isTexturePosition)
 {

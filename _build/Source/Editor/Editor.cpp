@@ -8,24 +8,24 @@
 
 Editor::Editor()
 {
-	currentProject = std::make_unique<Project>("Projects/Test/Test.txt");
+	mCurrentProject = std::make_unique<Project>("Projects/Test/Test.txt");
 
-	sceneView = new SceneView("Scene View", { 1280, 720 });
-	tileSelector = new TileSelector("Tile Selector", { 360, 720 });
+	mSceneView = new SceneView("Scene View", { 1280, 720 });
+	mTileSelector = new TileSelector("Tile Selector", { 360, 720 });
 
-	sceneView->SetProject(currentProject.get());
-	tileSelector->SetProject(currentProject.get());
+	mSceneView->SetProject(mCurrentProject.get());
+	mTileSelector->SetProject(mCurrentProject.get());
 
-	mWindows.emplace_back(sceneView);	
-	mWindows.emplace_back(tileSelector);	
+	mWindows.emplace_back(mSceneView);	
+	mWindows.emplace_back(mTileSelector);	
 
 	auto OnDataChanged = [this](TileData& tileData) {
-		sceneView->SetNewTileData(tileData);
+		mSceneView->SetNewTileData(tileData);
 		};
 
-	tileSelector->OnDataChanged += OnDataChanged;
-	sceneView->SetTileSelector(tileSelector);
-	sceneView->SetNewTileData(tileSelector->GetSelectedTileData());
+	mTileSelector->OnDataChanged += OnDataChanged;
+	mSceneView->SetTileSelector(mTileSelector);
+	mSceneView->SetNewTileData(mTileSelector->GetSelectedTileData());
 }
 
 Editor::~Editor()
@@ -46,5 +46,43 @@ void Editor::Update()
 		return;
 	}
 	
-	
+	if (mCurrentProject && IsKeyPressed(KEY_S))
+	{
+		if (IsKeyDown(KEY_RIGHT_SHIFT) || IsKeyDown(KEY_LEFT_SHIFT))
+		{
+			OpenSaveAsModal();
+		}
+		else
+		{
+			mCurrentProject->Save();
+		}
+	}
+}
+
+void Editor::ImGuiDraw()
+{
+	ILayer::ImGuiDraw();
+
+	if (!mSaveAsModal) 
+		return;
+
+	mSaveAsModal->ImGuiDrawBegin();
+	mSaveAsModal->ImGuiDraw();
+	mSaveAsModal->ImGuiDrawEnd();
+
+	if (!mSaveAsModal->IsClosed())
+		return;
+
+	if (mSaveAsModal->ShouldSave())
+	{
+		mCurrentProject->SaveAs(mSaveAsModal->GetSavePath());
+	}
+
+	mSaveAsModal.reset();
+}
+
+void Editor::OpenSaveAsModal()
+{
+	if (!mSaveAsModal)
+		mSaveAsModal = std::make_unique<SaveAsModal>();
 }

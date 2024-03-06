@@ -15,6 +15,8 @@ public:
 	virtual void Update() {}
 	virtual void ImGuiDraw() = 0;
 	virtual void DrawDebugMenuItems();
+
+	bool IsClosed() const { return mIsClosed; }
 protected:
 	string mTtitle;
 	string_view mDisplayTitle;

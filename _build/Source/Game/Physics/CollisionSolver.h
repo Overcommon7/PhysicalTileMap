@@ -25,7 +25,7 @@ private:
 	static void SolveLeftCollision(Rigidbody* rigidbody, Vector2Int corner, Vector2Int offset, Conversion gridToScreen, bool& stopX, bool& stopY);
 	static void SolveRightCollision(Rigidbody* rigidbody, Vector2Int corner, Vector2Int offset, Conversion gridToScreen, bool& stopX, bool& stopY);
 
-	static void SolveCorner(
+	static void SolveSide(
 		const std::function<void(Rigidbody*, Vector2Int, Vector2Int, Conversion, bool&, bool&)> solver,
 		Rigidbody* rigidbody, Project* project, Vector2Int corner, Vector2Int offset, 
 		Conversion gridToScreen, bool& stopX, bool& stopY);

@@ -24,7 +24,8 @@ class Project
 public:
 	Vector2Int GetTileSize() const { return mTileSize; }
 	Vector2Int GetPlayerStartPosition() const { return mStartPosition; }
-
+	
+	void SetPlayerSpawnPosition(Vector2Int spawnPosition) { mStartPosition = spawnPosition; }
 	void SetTile(Vector2Int position, const TileData& data);
 	void RemoveTile(Vector2Int position);
 	void Draw(Vector2Int begin, Vector2Int end, const std::function<Vector2Int(Vector2Int)>& gridToScreen);

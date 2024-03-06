@@ -28,25 +28,25 @@ void CollisionSolver::RigidbodyTilemapCollision(Rigidbody* rigidbody, Project* p
     {
         auto collider = rigidbody->mSprite->Collider();
         Vector2Int corner = screenToGrid({ collider.x + (collider.width * 0.5f), collider.y + collider.height });
-        SolveCorner(SolveBottomCollision, rigidbody, project, corner, offset, gridToScreen, stopX, stopY);
+        SolveSide(SolveBottomCollision, rigidbody, project, corner, offset, gridToScreen, stopX, stopY);
     }   
 
     {
         auto collider = rigidbody->mSprite->Collider();
         Vector2Int corner = screenToGrid({ collider.x + (collider.width * 0.5f), collider.y });
-        SolveCorner(SolveTopCollision, rigidbody, project, corner, offset, gridToScreen, stopX, stopY);
+        SolveSide(SolveTopCollision, rigidbody, project, corner, offset, gridToScreen, stopX, stopY);
     }
 
     {
         auto collider = rigidbody->mSprite->Collider();
         Vector2Int corner = screenToGrid({ collider.x, collider.y + (collider.height * 0.5f) });
-        SolveCorner(SolveLeftCollision, rigidbody, project, corner, offset, gridToScreen, stopX, stopY);
+        SolveSide(SolveLeftCollision, rigidbody, project, corner, offset, gridToScreen, stopX, stopY);
     }
 
     {
         auto collider = rigidbody->mSprite->Collider();
         Vector2Int corner = screenToGrid({ collider.x + collider.width, collider.y + (collider.height * 0.5f) });
-        SolveCorner(SolveRightCollision, rigidbody, project, corner, offset, gridToScreen, stopX, stopY);
+        SolveSide(SolveRightCollision, rigidbody, project, corner, offset, gridToScreen, stopX, stopY);
     }
 
     if (stopX)
@@ -155,7 +155,7 @@ void CollisionSolver::SolveRightCollision(Rigidbody* rigidbody, Vector2Int corne
     rigidbody->mSprite->SetPositionX(position);
 }
 
-void CollisionSolver::SolveCorner(const std::function<void(Rigidbody*, Vector2Int, Vector2Int, Conversion, bool&, bool&)> solver, 
+void CollisionSolver::SolveSide(const std::function<void(Rigidbody*, Vector2Int, Vector2Int, Conversion, bool&, bool&)> solver, 
     Rigidbody* rigidbody, Project* project, Vector2Int corner, Vector2Int offset, Conversion gridToScreen, 
     bool& stopX, bool& stopY)
 {

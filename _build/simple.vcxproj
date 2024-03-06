@@ -105,6 +105,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Editor\Windows\SaveAsModal.cpp" />
     <ClCompile Include="Source\Game\Windows\DebugWindow.cpp" />
     <ClCompile Include="Source\Game\Physics\CollisionSolver.cpp" />
     <ClCompile Include="Source\Game\Physics\Rigidbody.cpp" />
@@ -137,6 +138,7 @@
     <ClCompile Include="Source\Game\Sprites\Sprite.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Editor\Windows\SaveAsModal.h" />
     <ClInclude Include="Source\Game\Windows\DebugWindow.h" />
     <ClInclude Include="Source\Game\Physics\CollisionSolver.h" />
     <ClInclude Include="Source\Game\Physics\PhysicsLayers.h" />

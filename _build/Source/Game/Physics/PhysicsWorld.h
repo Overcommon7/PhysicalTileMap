@@ -44,7 +44,7 @@ private:
 	
 	static inline std::hash<string> sHasher = {};
 	static inline unique_ptr<PhysicsWorld> sWorld = nullptr;
-	static inline constexpr float GRAVITY = 550.f;
+	static inline constexpr float GRAVITY = 550.f * 3.1f;
 	static inline constexpr float TIME_STEP = 1 / 60.f;
 };
 

@@ -40,6 +40,7 @@ private:
 	void DrawFileMenu();
 	void DrawEditMenu();
 	void DrawMiniTile();
+	void DrawPlayerMenu();
 
 
 	Vector2Int ScreenToGrid(Vector2Int screenPosition, bool isTexturePosition = false);
@@ -77,6 +78,7 @@ private:
 	TileData mCurrentTileData;
 	TileSelector* mTileSelector;
 	std::function<Vector2Int(Vector2Int)> mGridToScreen;
+	
 
 	friend class Selection;
 };

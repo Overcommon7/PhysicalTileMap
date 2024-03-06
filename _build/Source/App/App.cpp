@@ -93,7 +93,7 @@ void App::ChangeState(State state)
 
 	if (state == State::Gameplay)
 	{
-		sInstance->mGame->OnStart(sInstance->mEditor->currentProject.get());
+		sInstance->mGame->OnStart(sInstance->mEditor->mCurrentProject.get());
 	}
 	else if (state == State::Editing)
 	{
