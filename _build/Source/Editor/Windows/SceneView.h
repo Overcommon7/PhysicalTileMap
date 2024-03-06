@@ -18,6 +18,7 @@ public:
 		, mTileSelector(nullptr)
 	{
 		mHasMenuBar = true;
+		mCamera.SetZoom(0.5671f);
 	}
 
 	void SetProject(Project* project);

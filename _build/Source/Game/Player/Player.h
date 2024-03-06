@@ -13,6 +13,11 @@ public:
 	void Update();
 
 	void ImGuiDraw();
+
+	const Rigidbody& GetRigidbody() const { return mRigidbody; }
+	Rigidbody& GetRigidbody() { return mRigidbody; }
+
+	const Controls& GetControls() const { return mControls; }
 private:
 	struct Debug
 	{

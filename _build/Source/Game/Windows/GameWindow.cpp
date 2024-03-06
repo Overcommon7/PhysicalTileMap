@@ -15,6 +15,8 @@ GameWindow::ITextureWindowConstructor(GameWindow)
 	, mProject(nullptr)
 {
 	mHasMenuBar = true;
+	auto& rayCamera = mCamera.GetRaylibCamera();
+	rayCamera.offset = mCamera.GetResolution() * 0.5f;
 }
 
 void GameWindow::Start(Project* project)
@@ -36,6 +38,10 @@ void GameWindow::Update()
 {
 	UpdateStartAndEnd();
 	mPlayer->Update();
+
+	auto& rayCamera = mCamera.GetRaylibCamera();
+	rayCamera.target = mPlayer->GetPosition();
+	
 }
 
 void GameWindow::RaylibDraw()
@@ -122,12 +128,12 @@ Vector2Int GameWindow::GridToScreen(Vector2Int gridPosition) const
 
 void GameWindow::UpdateStartAndEnd()
 {
-	const Camera2D& rayCamera = camera.GetRaylibCamera();
-	const Vector2Int resolution(camera.GetResolution());
+	const Camera2D& rayCamera = mCamera.GetRaylibCamera();
+	const Vector2Int resolution(mCamera.GetResolution());
 	const Vector2Int tileSize(mProject->GetTileSize());
 	const Vector2Int first((int)rayCamera.target.x % tileSize.x, (int)rayCamera.target.y % tileSize.y);
 
 
-	mStart = camera.TransformPoint(first - tileSize);
-	mEnd = camera.TransformPoint(resolution + tileSize);
+	mStart = mCamera.TransformPoint(first - tileSize);
+	mEnd = mCamera.TransformPoint(resolution + tileSize);
 }

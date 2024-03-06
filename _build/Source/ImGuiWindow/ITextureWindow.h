@@ -17,10 +17,10 @@ public:
     void DrawDebugMenuItems() override;
 
 
-    void SetClearColor(Color color) { camera.SetClearColor(color); }
-    void SetTintColor(Color color) { camera.SetTintColor(color); }
+    void SetClearColor(Color color) { mCamera.SetClearColor(color); }
+    void SetTintColor(Color color) { mCamera.SetTintColor(color); }
 
-    Render::Camera& GetCamera() { return camera; }
+    Render::Camera& GetCamera() { return mCamera; }
     Vector2Int GetMousePosition() const;
     Vector2Int GetTexturePoint(Vector2Int point) const ;
     bool IsInsideTexture(Vector2Int point) const;
@@ -28,10 +28,10 @@ protected:
     ITextureWindow(const string& title, Vector2Int cameraResolution);
 
     virtual void RaylibDraw() = 0;
-    Render::Camera camera;
-    Vector2Int localMousePosition;
-    Vector2Int textureSize;
-    Vector2Int texturePosition;
+    Render::Camera mCamera;
+    Vector2Int mLocalMousePosition;
+    Vector2Int mTextureSize;
+    Vector2Int mTexturePosition;
 private:
     void DrawTextureToWindow();
 };

@@ -27,6 +27,7 @@
     <ClCompile Include="Source\ImGuiUtilities\ImGuiUtils.cpp" />
     <ClCompile Include="Source\Game\Windows\DebugWindow.cpp" />
     <ClCompile Include="Source\Editor\Windows\SaveAsModal.cpp" />
+    <ClCompile Include="Source\Game\Camera\CameraMovement.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\pch.h" />
@@ -59,5 +60,6 @@
     <ClInclude Include="Source\ImGuiUtilities\ImGuiUtils.h" />
     <ClInclude Include="Source\Game\Windows\DebugWindow.h" />
     <ClInclude Include="Source\Editor\Windows\SaveAsModal.h" />
+    <ClInclude Include="Source\Game\Camera\CameraMovement.h" />
   </ItemGroup>
 </Project>

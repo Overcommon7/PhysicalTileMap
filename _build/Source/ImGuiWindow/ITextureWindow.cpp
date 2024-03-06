@@ -3,71 +3,71 @@
 
 void ITextureWindow::Terminate()
 {
-	camera.Terminate();
+	mCamera.Terminate();
 }
 
 void ITextureWindow::Update()
 {
-	camera.Update();
+	mCamera.Update();
 }
 
 void ITextureWindow::BeginDraw()
 {
-	camera.BeginDrawing();
+	mCamera.BeginDrawing();
 	RaylibDraw();
 }
 
 void ITextureWindow::EndDraw()
 {
-	camera.EndDrawing();
+	mCamera.EndDrawing();
 }
 
 void ITextureWindow::ImGuiDraw()
 {	
 	DrawTextureToWindow();
-	texturePosition = ImGui::GetItemRectMin();
-	localMousePosition = GetTexturePoint(::GetMousePosition());	
+	mTexturePosition = ImGui::GetItemRectMin();
+	mLocalMousePosition = GetTexturePoint(::GetMousePosition());	
 }
 
 void ITextureWindow::DrawDebugMenuItems()
 {
 	Vector2Int mousePosition(::GetMousePosition());
 	ImGui::Text("Mouse Position: %i, %i", mousePosition.x, mousePosition.y);
-	ImGui::Text("Local Mouse Position: %i, %i", localMousePosition.x, localMousePosition.y);
+	ImGui::Text("Local Mouse Position: %i, %i", mLocalMousePosition.x, mLocalMousePosition.y);
 	ImGui::Text("Is Within Texture: %s", IsInsideTexture(mousePosition) ? "true" : "false");
 }
 
 Vector2Int ITextureWindow::GetMousePosition() const
 {
-	return localMousePosition;
+	return mLocalMousePosition;
 }
 
 Vector2Int ITextureWindow::GetTexturePoint(Vector2Int point) const
 {	
-	Vector2Int position = point - texturePosition;
-	Vector2 ratio = Vector2Divide(camera.GetResolution(), textureSize);
+	Vector2Int position = point - mTexturePosition;
+	Vector2 ratio = Vector2Divide(mCamera.GetResolution(), mTextureSize);
 	Vector2 cameraPosition(Vector2Multiply(ratio, position));
-	return camera.TransformPoint(cameraPosition);
+	return mCamera.TransformPoint(cameraPosition);
 }
 
 bool ITextureWindow::IsInsideTexture(Vector2Int point) const
 {
-	Rectangle rectangle(texturePosition.x, texturePosition.y, textureSize.x, textureSize.y);
+	Rectangle rectangle(mTexturePosition.x, mTexturePosition.y, mTextureSize.x, mTextureSize.y);
 	return CheckCollisionPointRec(point, rectangle);
 }
 
 ITextureWindow::ITextureWindow(const string& title, Vector2Int cameraResolution)
 	: IWindow(title)
-	, camera({0, 0}, cameraResolution)
-	, localMousePosition({})
+	, mCamera({0, 0}, cameraResolution)
+	, mLocalMousePosition({})
 {
-	camera.SetActive(false);
-	camera.Center(false);
+	mCamera.SetActive(false);
+	mCamera.Center(false);
 }
 
 void ITextureWindow::DrawTextureToWindow()
 {
-	const RenderTexture& image = camera.GetRenderTexture();
+	const RenderTexture& image = mCamera.GetRenderTexture();
 	ImVec2 area = ImGui::GetContentRegionAvail();
 
 	float scale =  area.x / image.texture.width;
@@ -78,14 +78,14 @@ void ITextureWindow::DrawTextureToWindow()
 		scale = area.y / image.texture.height;
 	}
 
-	textureSize.x = int(image.texture.width * scale);
-	textureSize.y = int(image.texture.height * scale);
+	mTextureSize.x = int(image.texture.width * scale);
+	mTextureSize.y = int(image.texture.height * scale);
 
 
 	ImGui::SetCursorPosX(0);
-	ImGui::SetCursorPosX(area.x/2 - textureSize.x/2);
-	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + (area.y / 2 - textureSize.y / 2));
+	ImGui::SetCursorPosX(area.x/2 - mTextureSize.x/2);
+	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + (area.y / 2 - mTextureSize.y / 2));
 
 
-	rlImGuiImageRect(&image.texture, textureSize.x, textureSize.y, Rectangle{ 0,0, float(image.texture.width), -float(image.texture.height) });
+	rlImGuiImageRect(&image.texture, mTextureSize.x, mTextureSize.y, Rectangle{ 0,0, float(image.texture.width), -float(image.texture.height) });
 }

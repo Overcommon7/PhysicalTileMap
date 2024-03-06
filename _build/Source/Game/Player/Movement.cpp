@@ -23,6 +23,29 @@ void Movement::UpdateHoriantalMovement(Player* player, Values& values, const flo
 {
 	Rigidbody& rigidbody = player->mRigidbody;
 	Controls& controls = player->mControls;
+	const float velocity = rigidbody.GetVelocity().x;
+
+	if (!controls.mIsHoldingRight && !controls.mIsHoldingLeft)
+	{
+		values.moving = Direction::None;
+	}
+
+	if ((velocity >= 0 && controls.mIsHoldingRight) || (velocity <= 0 && controls.mIsHoldingLeft))
+	{
+		values.moving = velocity > 0 ? Direction::Right : Direction::Left;
+		ApplyAcceleration(player, values, timeStep);
+	}
+	else
+	{
+		ApplyDecceleration(player, values, timeStep);
+	}
+
+}
+
+void Movement::ApplyAcceleration(Player* player, Values& values, const float timeSte)
+{
+	Rigidbody& rigidbody = player->mRigidbody;
+	Controls& controls = player->mControls;
 
 	float acceleration = values.walkingAcclerationSpeed;
 	float maxSpeed = values.maxWalkingSpeed;
@@ -31,7 +54,6 @@ void Movement::UpdateHoriantalMovement(Player* player, Values& values, const flo
 		acceleration = values.runningAcclerationSpeed;
 		maxSpeed = values.maxRunningSpeed;	
 	}
-		
 
 	if (controls.mIsHoldingLeft)
 	{
@@ -47,6 +69,29 @@ void Movement::UpdateHoriantalMovement(Player* player, Values& values, const flo
 	}
 
 	rigidbody.SetVelocityX(std::clamp(rigidbody.GetVelocity().x, -maxSpeed, maxSpeed));
+}
+
+void Movement::ApplyDecceleration(Player* player, Values& values, const float timeSte)
+{
+	Rigidbody& rigidbody = player->mRigidbody;
+	Controls& controls = player->mControls;
+
+	float deceleration{};
+
+	if (values.moving == Direction::None)
+	{
+		deceleration = values.passiveDecclerationSpeed;
+	}
+	else if (controls.mIsHoldingRun)
+	{
+		deceleration = values.runningDecclerationSpeed;
+	}
+	else
+	{
+		deceleration = values.walkingDecclerationSpeed;
+	}
+
+	rigidbody.SetDecelerationSpeed(deceleration);
 }
 
 void Movement::ValidateJump(Player* player, Values& values)
@@ -90,12 +135,9 @@ void Movement::DoJump(Player* player, Values& values, float fixedTimeStep)
 	}
 	else
 	{
-		float t = (airTime / values.maxAirTime);
-		float jumpForce = 0;
-		jumpForce = std::lerp(values.maintainedJumpForce, 0.f, t);
-		if (values.mDebug.applyForce)
-			rigidbody.ApplyForceY(-jumpForce);
-		else rigidbody.SetVelocityX(-jumpForce);
+		float t = airTime / values.maxAirTime;
+		float jumpForce = std::lerp(values.maintainedJumpForce, 0.f, t);
+		rigidbody.ApplyForceY(-jumpForce);
 	}
 
 
@@ -109,7 +151,7 @@ void Movement::ImGuiDraw(Values& values)
 	ImGuiUtils::SerializeFloat("Running Acceleration", values.runningAcclerationSpeed, 0.1f);
 	ImGuiUtils::SerializeFloat("Active Walking Decceleration", values.walkingDecclerationSpeed, 0.1f);
 	ImGuiUtils::SerializeFloat("Active Running Decceleration", values.runningDecclerationSpeed, 0.1f);
-	ImGuiUtils::SerializeFloat("Passive Decceleration", values.decclerationSpeed, 0.1f);
+	ImGuiUtils::SerializeFloat("Passive Decceleration", values.passiveDecclerationSpeed, 0.1f);
 	ImGuiUtils::SerializeFloat("Initial Jump Force", values.initialJumpForce, 0.1f);
 	ImGuiUtils::SerializeFloat("Maitained Jump Force", values.maintainedJumpForce, 0.1f);
 	ImGuiUtils::SerializeFloat("Air Time", values.maxAirTime, 0.1f);
@@ -144,7 +186,7 @@ Movement::Values::Values(const fs::path& path)
 	inFile >> runningAcclerationSpeed;
 	inFile >> walkingDecclerationSpeed;
 	inFile >> runningDecclerationSpeed;
-	inFile >> decclerationSpeed;
+	inFile >> passiveDecclerationSpeed;
 	inFile >> initialJumpForce;
 	inFile >> maintainedJumpForce;
 	inFile >> maxAirTime;	
@@ -163,7 +205,7 @@ void Movement::Values::SaveToFile()
 	inFile << runningAcclerationSpeed << '\n';
 	inFile << walkingDecclerationSpeed << '\n';
 	inFile << runningDecclerationSpeed << '\n';
-	inFile << decclerationSpeed << '\n';
+	inFile << passiveDecclerationSpeed << '\n';
 	inFile << initialJumpForce << '\n';
 	inFile << maintainedJumpForce << '\n';
 	inFile << maxAirTime << '\n';

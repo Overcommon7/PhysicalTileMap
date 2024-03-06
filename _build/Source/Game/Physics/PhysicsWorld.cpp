@@ -171,7 +171,7 @@ void PhysicsWorld::SolveCollisions()
 			if (rigidbody->mCollideWithTilemap)
 				CollisionSolver::RigidbodyTilemapCollision(rigidbody, mProject, mScreenToGrid, mGridToScreen);
 
-			for (auto layer : rigidbody->mLayerMask)
+			for (const auto& layer : rigidbody->mLayerMask)
 			{
 				for (auto other : mBodies.at(layer))
 				{

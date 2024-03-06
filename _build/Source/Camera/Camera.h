@@ -28,6 +28,7 @@ namespace Render
 		static vector<int> GetAllCameraIDs();
 
 		void UpdateZoom(float zoom) { camera.zoom += zoom; }
+		void SetZoom(float zoom) { camera.zoom = zoom; }
 		bool IsMouseWithinBounds();
 
 		Vector2Int TransformPoint(Vector2Int position) const;

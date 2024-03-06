@@ -60,6 +60,7 @@ void SceneView::ImGuiDraw()
 		DrawFileMenu();
 		DrawEditMenu();
 		DrawSettingsMenuItem();
+		DrawPlayerMenu();
 		DrawDebugMenuItem();
 		ImGui::EndMenuBar();
 	}
@@ -97,7 +98,7 @@ void SceneView::UpdateInputs()
 
 void SceneView::UpdateCamera()
 {
-	Camera2D& rayCamera = camera.GetRaylibCamera();
+	Camera2D& rayCamera = mCamera.GetRaylibCamera();
 
 	if (ImGui::IsWindowHovered())
 	{
@@ -120,7 +121,7 @@ void SceneView::UpdateCamera()
 
 void SceneView::DrawGrid()
 {
-	const Camera2D& rayCamera = camera.GetRaylibCamera();
+	const Camera2D& rayCamera = mCamera.GetRaylibCamera();
 	const int thickness = mSettings.showGrid ? mSettings.gridThickness : 0;
 
 	const Vector2Int tileSize(mProject->GetTileSize() + thickness);	
@@ -139,22 +140,20 @@ void SceneView::DrawGrid()
 
 void SceneView::UpdateStartAndEnd()
 {
-	const Camera2D& rayCamera = camera.GetRaylibCamera();
-	const Vector2Int resolution(camera.GetResolution());
+	const Camera2D& rayCamera = mCamera.GetRaylibCamera();
+	const Vector2Int resolution(mCamera.GetResolution());
 	const Vector2Int tileSize(mProject->GetTileSize());
 	const Vector2Int first((int)rayCamera.target.x % tileSize.x, (int)rayCamera.target.y % tileSize.y);
 
 
-	mStart = camera.TransformPoint(first - tileSize);
-	mEnd = camera.TransformPoint(resolution + tileSize);
+	mStart = mCamera.TransformPoint(first - tileSize);
+	mEnd = mCamera.TransformPoint(resolution + tileSize);
 }
 
 void SceneView::UpdateProject()
 {	
 	if (ImGui::IsKeyDown(ImGuiKey_LeftShift))
 		return;
-
-
 
 	bool left = ImGui::IsMouseDown(ImGuiMouseButton_Left);
 	bool right = ImGui::IsMouseDown(ImGuiMouseButton_Right);

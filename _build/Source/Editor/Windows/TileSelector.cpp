@@ -75,7 +75,7 @@ void TileSelector::Update()
 	if (mProject == nullptr)
 		return;
 
-	const Vector2Int resolution(camera.GetResolution());
+	const Vector2Int resolution(mCamera.GetResolution());
 	Vector2Int size(mWindowSize);
 	size.x *= 0.9f;
 	size.y *= 0.9f;
@@ -88,7 +88,7 @@ void TileSelector::Update()
 		const Vector2Int tileSize(mProject->GetTileSize());
 		size.x -= size.x % tileSize.x;
 		size.x -= size.y % tileSize.y;
-		camera.SetResolution(size);
+		mCamera.SetResolution(size);
 	}
 
 	mNewDataSelected = false;
@@ -98,7 +98,7 @@ void TileSelector::DrawProject()
 {
 	const Vector2Int tileSize = mProject->GetTileSize();
 	Vector2Int position = Vector2Int(sSpacing, sSpacing);
-	const Vector2Int resolution(camera.GetResolution());
+	const Vector2Int resolution(mCamera.GetResolution());
 
 	bool isInTexture = IsInsideTexture(::GetMousePosition());
 	bool mouseClicked = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
@@ -113,7 +113,7 @@ void TileSelector::DrawProject()
 			bool isColliding = false;
 
 			Rectangle collider(position.x, position.y, tileSize.x, tileSize.y);
-			if (CheckCollisionPointRec(localMousePosition, collider))
+			if (CheckCollisionPointRec(mLocalMousePosition, collider))
 			{
 				DrawRectangleRec(collider, { 120, 120, 120, 120 });
 				isColliding = true;

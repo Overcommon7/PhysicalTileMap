@@ -47,7 +47,7 @@ void Game::Stop()
 void Game::Update()
 {
 	ILayer::Update();
-	PhysicsWorld::Update();	
+	PhysicsWorld::Update();
 }
 
 void Game::RaylibDraw()
