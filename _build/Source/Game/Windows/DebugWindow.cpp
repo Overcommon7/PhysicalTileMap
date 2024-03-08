@@ -14,5 +14,5 @@ void DebugWindow::ImGuiDraw()
 		mPlayer->ImGuiDraw();
 
 	if (mCameraValues)
-		CameraMovement::ImGuiDraw(mCameraValues);
+		CameraMovement::ImGuiDraw(*mCamera, mCameraValues);
 }

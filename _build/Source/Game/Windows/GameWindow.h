@@ -28,6 +28,7 @@ private:
 	Vector2Int mStart;
 	Vector2Int mEnd;
 	CameraMovement::Values mCameraValues;
+	function<void(const float)> mFixedUpdate{};
 
 	void DrawFileMenu();
 	void DrawEditMenu();

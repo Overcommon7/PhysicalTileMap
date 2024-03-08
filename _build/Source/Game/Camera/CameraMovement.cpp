@@ -9,36 +9,26 @@
 #include "Game/Physics/Rigidbody.h"
 #include "Game/Sprites/Sprite.h"
 
-void CameraMovement::Update(Render::Camera& camera, Values& values, const Player& player)
+void CameraMovement::FixedUpdate(Render::Camera& camera, Values& values, const Player& player)
 {
 	auto& rCamera = camera.GetRaylibCamera();
 	const auto& pRigidbody = player.GetRigidbody();
+	auto position = pRigidbody.GetSprite()->GetPosition();
 
-	rCamera.target = values.sprite->GetPosition();
-	rCamera.offset = camera.GetResolution() * 0.5f;
-
-	values.rigidbody->SetVelocity(pRigidbody.GetVelocity());
-
+	rCamera.target = position;
+	values.positionDelta = Vector2Subtract(position, values.lastPosition);
+	values.lastPosition = position;
+	rCamera.offset = camera.GetResolution() / 2;
+	
 }
 
-void CameraMovement::ImGuiDraw(Values* values)
+void CameraMovement::ImGuiDraw(Render::Camera& camera, Values* values)
 {
 	if (!ImGui::CollapsingHeader("Camera Movement"))
 		return;
 
-	
-}
-
-void CameraMovement::Values::Initialize()
-{
-	sprite = new Sprite(Sprite::Type::Other, Vector2{ 0, 0 }, Vector2{ 1, 1 });
-	rigidbody = new Rigidbody(sprite, PhysicsLayer::CAMERA, false, true);
-	rigidbody->UseDeceleration(false);
-	rigidbody->CollidesWithTilemap(false);
-}
-
-void CameraMovement::Values::Terminate()
-{
-	delete rigidbody;
-	delete sprite;
+	const auto& rCamera = camera.GetRaylibCamera();
+	ImGuiUtils::DrawVector2("Target: ", rCamera.target);
+	ImGuiUtils::DrawVector2("Offset: ", rCamera.offset);
+	ImGuiUtils::DrawVector2("Position Delta: ", values->positionDelta);
 }

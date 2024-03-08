@@ -14,15 +14,15 @@ class CameraMovement
 public:
     struct Values
     {
-        Rigidbody* rigidbody = nullptr;
-        Sprite* sprite = nullptr;
-
-        void Initialize();
-        void Terminate();
+        float minSpeed = 30.f;
+        float minDistance = 10.f;
+        float distanceEffector = 0.8f;
+        Vector2 lastPosition{};
+        Vector2 positionDelta{};
     };
 public:
-    static void Update(Render::Camera& camera, Values& values, const Player& player);
-    static void ImGuiDraw(Values* values);
+    static void FixedUpdate(Render::Camera& camera, Values& values, const Player& player);
+    static void ImGuiDraw(Render::Camera& camera, Values* values);
 private:
 public:
     CameraMovement() = delete;

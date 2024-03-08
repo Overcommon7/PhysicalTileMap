@@ -34,7 +34,8 @@ void Game::OnStart(Project* project)
 	mGame->Start(project);
 
 	mDebug->SetPlayer(mGame->GetPlayer());
-	mDebug->SetCamera(mGame->GetCameraValues());
+	mDebug->SetCameraValues(mGame->GetCameraValues());
+	mDebug->SetCamera(&mGame->GetCamera());
 }
 
 void Game::Stop()

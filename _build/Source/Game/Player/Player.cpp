@@ -13,10 +13,10 @@ Player::Player(Vector2 position, Vector2 size)
 {
 
 
-	mFixedUpdate = [this](const float fixedDeltaTime) {
+	mFixedUpdate = std::move([this](const float fixedDeltaTime) {
 		if (mDebug.useInputs)
 			Movement::FixedUpdate(this, mMovementValues, fixedDeltaTime);
-		};
+		});
 
 	PhysicsWorld::OnFixedTimeStep() += mFixedUpdate;
 }

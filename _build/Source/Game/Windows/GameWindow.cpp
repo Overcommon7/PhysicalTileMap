@@ -6,6 +6,7 @@
 
 #include "Game/Physics/PhysicsWorld.h"
 #include "Game/Camera/CameraMovement.h"
+#include "Game/Physics/PhysicsWorld.h"
 
 
 #include "App/App.h"
@@ -24,12 +25,17 @@ void GameWindow::Start(Project* project)
 	auto position(GridToScreen(project->GetPlayerStartPosition()));
 	auto size(project->GetTileSize() * 0.95f);
 	mPlayer = new Player(position, size);
-	mCameraValues.Initialize();
+
+	mCamera.GetRaylibCamera().target = position;
+	
+	mFixedUpdate = std::move([this](const float) { CameraMovement::FixedUpdate(mCamera, mCameraValues, *mPlayer); });
+
+	PhysicsWorld::OnFixedTimeStep() += mFixedUpdate;
 }
 
 void GameWindow::Stop()
 {
-	mCameraValues.Terminate();
+	PhysicsWorld::OnFixedTimeStep() -= mFixedUpdate;
 
 	delete mPlayer;
 	mPlayer = nullptr;
@@ -38,8 +44,6 @@ void GameWindow::Stop()
 void GameWindow::Update()
 {	
 	mPlayer->Update();
-	CameraMovement::Update(mCamera, mCameraValues, *mPlayer);
-
 	UpdateStartAndEnd();
 }
 
