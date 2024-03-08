@@ -46,7 +46,7 @@ public:
 	
 
 	virtual void Draw();
-	Rectangle Collider();
+	Rectangle Collider() const;
 	Sprite(Type type, Texture2D texture, Vector2 position, Vector2 scale = {1, 1});
 	Sprite(Type type, Vector2 position, Vector2 size, Color color = WHITE);
 	Sprite() = delete;

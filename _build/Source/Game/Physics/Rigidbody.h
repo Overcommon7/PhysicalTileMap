@@ -16,11 +16,21 @@ struct Collision
 	}
 };
 
+struct CopyValues
+{
+	Rigidbody* rigidbody;
+	Sprite* sprite;
+
+	void Delete();
+};
+
 class Rigidbody
 {
 public:
 	Rigidbody(Sprite* sprite, size_t layer, bool useGravity = true, bool isTrigger = false);
 	~Rigidbody();
+
+	Vector2 Simulate(int steps) const;
 
 	void ApplyForce(Vector2 force);
 	void ApplyForceX(float x);
@@ -48,6 +58,9 @@ public:
 	bool IsActive() const { return mIsActive; }
 	bool IsGrounded() const { return mIsGrounded; }
 
+	void CollidesWithTilemap(bool collides) { mCollideWithTilemap = collides; }
+	bool CollidesWithTilemap() { return mCollideWithTilemap; }
+
 	const vector<Collision>& GetCollisions() const { return mCollisions; }
 
 	void ImGuiDraw();
@@ -68,6 +81,7 @@ private:
 	vector<size_t> mLayerMask;
 	vector<Collision> mCollisions;
 
+	CopyValues Copy() const;
 
 	friend class PhysicsWorld;
 	friend class CollisionSolver;

@@ -4,6 +4,7 @@
 #include "Game/Player/Player.h"
 
 #include "Game/Physics/CollisionSolver.h"
+#include "Camera/Camera.h"
 
 void DebugWindow::ImGuiDraw()
 {
@@ -11,4 +12,7 @@ void DebugWindow::ImGuiDraw()
 
 	if (mPlayer)
 		mPlayer->ImGuiDraw();
+
+	if (mCameraValues)
+		CameraMovement::ImGuiDraw(mCameraValues);
 }

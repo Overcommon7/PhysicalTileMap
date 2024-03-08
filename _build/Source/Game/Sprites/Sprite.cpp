@@ -26,7 +26,7 @@ void Sprite::Draw()
 	}
 }
 
-Rectangle Sprite::Collider()
+Rectangle Sprite::Collider() const
 {
 	if (mUsingTexture)
 	{

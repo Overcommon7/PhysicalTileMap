@@ -5,7 +5,7 @@
 #include "../../Editor/Project/Project.h"
 
 #include "Game/Physics/PhysicsWorld.h"
-
+#include "Game/Camera/CameraMovement.h"
 
 
 #include "App/App.h"
@@ -15,8 +15,6 @@ GameWindow::ITextureWindowConstructor(GameWindow)
 	, mProject(nullptr)
 {
 	mHasMenuBar = true;
-	auto& rayCamera = mCamera.GetRaylibCamera();
-	rayCamera.offset = mCamera.GetResolution() * 0.5f;
 }
 
 void GameWindow::Start(Project* project)
@@ -26,22 +24,23 @@ void GameWindow::Start(Project* project)
 	auto position(GridToScreen(project->GetPlayerStartPosition()));
 	auto size(project->GetTileSize() * 0.95f);
 	mPlayer = new Player(position, size);
+	mCameraValues.Initialize();
 }
 
 void GameWindow::Stop()
 {
+	mCameraValues.Terminate();
+
 	delete mPlayer;
 	mPlayer = nullptr;
 }
 
 void GameWindow::Update()
-{
-	UpdateStartAndEnd();
+{	
 	mPlayer->Update();
+	CameraMovement::Update(mCamera, mCameraValues, *mPlayer);
 
-	auto& rayCamera = mCamera.GetRaylibCamera();
-	rayCamera.target = mPlayer->GetPosition();
-	
+	UpdateStartAndEnd();
 }
 
 void GameWindow::RaylibDraw()

@@ -1,5 +1,6 @@
 #pragma once
 #include "ImGuiWindow/ITextureWindow.h"
+#include "Game/Camera/CameraMovement.h"
 
 class Project;
 class Player;
@@ -20,11 +21,13 @@ public:
 	Vector2Int GridToScreen(Vector2Int gridPosition) const;
 
 	Player* GetPlayer() { return mPlayer; }
+	CameraMovement::Values* GetCameraValues() { return &mCameraValues; }
 private:
 	Project* mProject;
 	Player* mPlayer;
 	Vector2Int mStart;
 	Vector2Int mEnd;
+	CameraMovement::Values mCameraValues;
 
 	void DrawFileMenu();
 	void DrawEditMenu();

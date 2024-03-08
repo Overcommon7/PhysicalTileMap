@@ -4,6 +4,8 @@
 #include "PhysicsWorld.h"
 #include "ImGuiUtilities/ImGuiUtils.h"
 
+#include "Game/Sprites/Sprite.h"
+
 Rigidbody::Rigidbody(Sprite* sprite, size_t layer, bool useGravity, bool isTrigger)
 	: mSprite(sprite)
 	, mUseGravity(useGravity)
@@ -25,6 +27,11 @@ Rigidbody::Rigidbody(Sprite* sprite, size_t layer, bool useGravity, bool isTrigg
 Rigidbody::~Rigidbody()
 {
 	PhysicsWorld::RemoveRigidbody(this);
+}
+
+Vector2 Rigidbody::Simulate(int steps) const
+{
+	return PhysicsWorld::Simulate(this, steps);
 }
 
 void Rigidbody::ApplyForce(Vector2 force)
@@ -87,4 +94,34 @@ void Rigidbody::ImGuiDraw()
 	ImGuiUtils::DrawBool("Is Decelerating", mDecelerate);
 	ImGuiUtils::DrawBool("Is Grounded", mIsGrounded);
 	ImGui::Text("LayerID: %zu", mLayer);
+}
+
+CopyValues Rigidbody::Copy() const
+{
+	Rectangle collider(mSprite->Collider());
+	Vector2 size(collider.width, collider.height);
+	Sprite* simulateSprite = new Sprite(mSprite->GetType(), mSprite->GetPosition(), size);
+	Rigidbody* simulateBody = new Rigidbody(simulateSprite, mLayer, mUseGravity, mIsTrigger);
+
+	simulateBody->mVelocity = mVelocity;
+	simulateBody->mLayerMask = mLayerMask;
+	simulateBody->mCollideWithTilemap = mCollideWithTilemap;
+	simulateBody->mDecelerate = mDecelerate;
+	simulateBody->mGravityScale = mGravityScale;
+	simulateBody->mUseGravity = mUseGravity;
+	simulateBody->mIsActive = mIsActive;
+	simulateBody->mIsGrounded = mIsGrounded;
+	simulateBody->mDecelerate = mDecelerate;
+	simulateBody->mUseDeceleration = mUseDeceleration;
+
+	return { simulateBody, simulateSprite };
+}
+
+void CopyValues::Delete()
+{
+	delete sprite;
+	sprite = nullptr;
+
+	delete rigidbody;
+	rigidbody = nullptr;
 }

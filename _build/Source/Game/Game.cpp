@@ -32,7 +32,9 @@ void Game::OnStart(Project* project)
 
 	mProject = project;
 	mGame->Start(project);
+
 	mDebug->SetPlayer(mGame->GetPlayer());
+	mDebug->SetCamera(mGame->GetCameraValues());
 }
 
 void Game::Stop()

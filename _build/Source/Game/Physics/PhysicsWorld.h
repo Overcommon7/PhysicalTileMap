@@ -20,6 +20,7 @@ public:
 	static void AddRigidbody(Rigidbody* rigidbody);
 	static void RemoveRigidbody(Rigidbody* rigidbody);
 	static void ChangePhysicsLayer(Rigidbody* rigidbody, size_t layer);
+	static Vector2 Simulate(const Rigidbody* rigidbody, int frames);
 
 	static Action<const float>& OnFixedTimeStep() { return sWorld->mFixedTimeStepCalls; }
 private:
@@ -40,6 +41,7 @@ private:
 	void SolveCollisions();
 	void ApplyGravity(Rigidbody* body);
 	void ApplyDeceleration(Rigidbody* body);
+	void CalculateRigidbodyFrame(Rigidbody* rigidbody);
 
 	
 	static inline std::hash<string> sHasher = {};

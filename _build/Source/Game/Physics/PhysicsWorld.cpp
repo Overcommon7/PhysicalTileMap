@@ -105,6 +105,21 @@ void PhysicsWorld::ChangePhysicsLayer(Rigidbody* rigidbody, size_t layer)
 	newPhysicsLayer.push_back(rigidbody);
 }
 
+Vector2 PhysicsWorld::Simulate(const Rigidbody* rigidbody, int frames)
+{
+	CopyValues copy(rigidbody->Copy());
+
+	for (int i = 0; i < frames; ++i)
+		sWorld->CalculateRigidbodyFrame(copy.rigidbody);
+
+	Vector2 position = copy.sprite->GetPosition();
+
+	delete copy.rigidbody;
+	delete copy.sprite;
+
+	return position;
+}
+
 void PhysicsWorld::InternalUpdate()
 {
 	mTimer += Time::DeltaTime();
@@ -143,16 +158,7 @@ void PhysicsWorld::ApplyForces()
 				continue;
 
 			rigidbody->mCollisions.clear();
-
-			if (rigidbody->mUseGravity)
-				ApplyGravity(rigidbody);
-
-			if (rigidbody->mUseDeceleration)
-				ApplyDeceleration(rigidbody);
-
-			rigidbody->mDecelerate = true;
-			auto velocity(Vector2Scale(rigidbody->mVelocity, TIME_STEP));
-			rigidbody->mSprite->Translate(velocity);
+			CalculateRigidbodyFrame(rigidbody);
 		}	
 	}
 }
@@ -208,4 +214,17 @@ void PhysicsWorld::ApplyDeceleration(Rigidbody* body)
 		if (body->mVelocity.x < std::numeric_limits<float>::epsilon() * 2.f)
 			body->mVelocity.x = 0;
 	} 
+}
+
+void PhysicsWorld::CalculateRigidbodyFrame(Rigidbody* rigidbody)
+{
+	if (rigidbody->mUseGravity)
+		ApplyGravity(rigidbody);
+
+	if (rigidbody->mUseDeceleration)
+		ApplyDeceleration(rigidbody);
+
+	rigidbody->mDecelerate = true;
+	auto velocity(Vector2Scale(rigidbody->mVelocity, TIME_STEP));
+	rigidbody->mSprite->Translate(velocity);
 }
