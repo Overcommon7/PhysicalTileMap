@@ -113,6 +113,11 @@ void Movement::ValidateJump(Player* player, Values& values)
 	{
 		values.timeOfJump = Time::Now();
 	}
+
+	if (!rigidbody.IsGrounded())
+	{
+		values.canStartJump = false;
+	}
 }
 
 void Movement::DoJump(Player* player, Values& values, float fixedTimeStep)

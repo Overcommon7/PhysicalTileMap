@@ -28,7 +28,7 @@ void GameWindow::Start(Project* project)
 
 	mCamera.GetRaylibCamera().target = position;
 	
-	mFixedUpdate = std::move([this](const float) { CameraMovement::FixedUpdate(mCamera, mCameraValues, *mPlayer); });
+	mFixedUpdate = std::move([this](const float timeStep) { CameraMovement::FixedUpdate(mCamera, mCameraValues, *mPlayer, timeStep); });
 
 	PhysicsWorld::OnFixedTimeStep() += mFixedUpdate;
 }
