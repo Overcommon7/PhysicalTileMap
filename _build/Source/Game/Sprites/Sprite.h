@@ -69,10 +69,10 @@ private:
 };
 
 
-#define SpriteConstructor(className) className(Sprite::Type type, Texture2D texture, Vector2 position, Vector2 scale = {1, 1}) : GM::Sprite(type, texture, position, scale)
-#define SpriteConstructorCPP(className) className(Sprite::Type type, Texture2D texture, Vector2 position, Vector2 scale) : GM::Sprite(type, texture, position, scale)
+#define SpriteConstructor(className) className(Sprite::Type type, Texture2D texture, Vector2 position, Vector2 scale = {1, 1}) : Sprite(type, texture, position, scale)
+#define SpriteConstructorCPP(className) className(Sprite::Type type, Texture2D texture, Vector2 position, Vector2 scale) : Sprite(type, texture, position, scale)
 #define SpriteHeaderConstructor(className) className(Sprite::Type type, Texture2D texture, Vector2 position, Vector2 scale = {1, 1})
-#define SpriteOverladedConstructor(className, ...) className(Sprite::Type type, Texture2D texture, Vector2 position, Vector2 scale, __VA_ARGS__) : GM::Sprite(type, texture, position, scale)
+#define SpriteOverladedConstructor(className, ...) className(Sprite::Type type, Texture2D texture, Vector2 position, Vector2 scale, __VA_ARGS__) : Sprite(type, texture, position, scale)
 #define SpriteHeaderOverloadedConstructor(className, ...) className(Sprite::Type type, Texture2D texture, Vector2 position, Vector2 scale , __VA_ARGS__)
 
 

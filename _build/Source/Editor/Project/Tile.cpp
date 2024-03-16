@@ -4,21 +4,22 @@
 string Tile::GetSaveString(Vector2Int gridPosition)
 {
 	stringstream ss;
-	ss << data.imagePosition.x << ',' << data.imagePosition.y << '|';
+	ss << mData.mImagePosition.x << ',' << mData.mImagePosition.y << '|';
 	ss << gridPosition.x << ',' << gridPosition.y << '|';
-	ss << ColorToInt(data.tint);
+	ss << ColorToInt(mData.mTint) << '|';
+	ss << mData.mIsDeath ? 1 : 0;
 
 	return ss.str();
 }
 
 void Tile::SetData(const TileData& data)
 {
-	this->data = data;
+	this->mData = data;
 }
 
 
 Tile::Tile(const TileData& data)
-    :data(data)
+    :mData(data)
 {
 
 }

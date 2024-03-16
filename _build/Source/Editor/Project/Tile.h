@@ -2,28 +2,29 @@
 struct TileData
 {
 	TileData() = default;
-	TileData(Vector2Int imagePosition, size_t pathHash, Color tint)
-		: imagePosition(imagePosition), pathHash(pathHash), tint(tint) {}
+	TileData(Vector2Int imagePosition, size_t pathHash, Color tint, bool isDeath = false)
+		: mImagePosition(imagePosition), mPathHash(pathHash), mTint(tint), mIsDeath(isDeath) {}
 
 	TileData(const TileData& data)
-		: TileData(data.imagePosition, data.pathHash, data.tint) {}
+		: TileData(data.mImagePosition, data.mPathHash, data.mTint, data.mIsDeath) {}
 
-	Color tint = WHITE;
-	Vector2Int imagePosition{};
-	size_t pathHash{};
+	Color mTint = WHITE;
+	Vector2Int mImagePosition{};
+	size_t mPathHash{};
+	bool mIsDeath = false;
 };
 
 class Tile
 {
 public:
-	const TileData& GetData() const { return data; }
+	const TileData& GetData() const { return mData; }
 	string GetSaveString(Vector2Int gridPosition);
 	void SetData(const TileData& data);
 
 	Tile(const TileData& data);
 	Tile() = default;
 private:
-	TileData data;
+	TileData mData;
 	int ColorToInt(Color color);
 };
 

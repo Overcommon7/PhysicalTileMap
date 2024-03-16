@@ -1,5 +1,4 @@
 #pragma once
-#include "PhysicsLayers.h"
 class Sprite;
 class Rigidbody;
 
@@ -22,6 +21,14 @@ struct CopyValues
 	Sprite* sprite;
 
 	void Delete();
+};
+
+enum class CollisionEdge
+{
+	Top,
+	Bottom,
+	Right,
+	Left
 };
 
 class Rigidbody
@@ -80,6 +87,7 @@ private:
 
 	vector<size_t> mLayerMask;
 	vector<Collision> mCollisions;
+
 
 	CopyValues Copy() const;
 

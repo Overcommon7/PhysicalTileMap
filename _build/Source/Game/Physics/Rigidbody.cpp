@@ -6,6 +6,7 @@
 
 #include "Game/Sprites/Sprite.h"
 
+
 Rigidbody::Rigidbody(Sprite* sprite, size_t layer, bool useGravity, bool isTrigger)
 	: mSprite(sprite)
 	, mUseGravity(useGravity)

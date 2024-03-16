@@ -45,7 +45,7 @@ void SceneView::RaylibDraw()
 		DrawGrid();
 
 	
-	mProject->Draw(ScreenToGrid(mStart, true), ScreenToGrid(mEnd, true), mGridToScreen);
+	mProject->Draw(ScreenToGrid(mStart, true), ScreenToGrid(mEnd, true), mGridToScreen, Project::DrawMode::Editor);
 	mEditorValues.selection.RaylibDraw(this);
 	DrawMiniTile();
 
@@ -246,11 +246,7 @@ void SceneView::DrawFileMenu()
 
 		if (ImGui::Button("Save As"))
 		{
-			auto editor(App::GetLayer<Editor>());
-			if (editor.has_value())
-			{
-				editor->get().OpenSaveAsModal();
-			}
+			App::GetEditorLayer()->OpenSaveAsModal();
 		}
 		
 		if (ImGui::Button("Quit"))
@@ -286,13 +282,13 @@ void SceneView::DrawMiniTile()
 	const auto& texture = mTileSelector->GetCurrentTexture();
 	const auto position(this->GetMousePosition());
 	const auto tileSize(mProject->GetTileSize());
-	const auto texturePosition = mCurrentTileData.imagePosition * tileSize;
+	const auto texturePosition = mCurrentTileData.mImagePosition * tileSize;
 
 	const Rectangle source(texturePosition.x, texturePosition.y, tileSize.x, tileSize.y);
 	const Rectangle dest(position.x - 15.f, position.y - 15.f, 25.f, 25.f);
 	const Vector2 origin = { 0.0f, 0.0f };
 
-	DrawTexturePro(texture, source, dest, origin, 0.f, mCurrentTileData.tint);
+	DrawTexturePro(texture, source, dest, origin, 0.f, mCurrentTileData.mTint);
 }
 
 

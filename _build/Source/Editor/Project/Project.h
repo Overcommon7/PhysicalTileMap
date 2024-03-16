@@ -22,16 +22,23 @@ private:
 class Project
 {
 public:
+	enum class DrawMode
+	{
+		Editor,
+		Game
+	};
+public:
 	Vector2Int GetTileSize() const { return mTileSize; }
 	Vector2Int GetPlayerStartPosition() const { return mStartPosition; }
 	
 	void SetPlayerSpawnPosition(Vector2Int spawnPosition) { mStartPosition = spawnPosition; }
 	void SetTile(Vector2Int position, const TileData& data);
 	void RemoveTile(Vector2Int position);
-	void Draw(Vector2Int begin, Vector2Int end, const std::function<Vector2Int(Vector2Int)>& gridToScreen);
+	void Draw(Vector2Int begin, Vector2Int end, const std::function<Vector2Int(Vector2Int)>& gridToScreen, DrawMode mode);
 
 	vector<const FileData*> GetFileData() const;
 	Project(const fs::path& projectFile);
+	~Project();
 	void Save();
 	void SaveAs(const fs::path& path);
 	void Clear() { mTiles.clear(); }

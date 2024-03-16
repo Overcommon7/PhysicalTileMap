@@ -4,7 +4,15 @@
 #include "Game/Player/Player.h"
 
 #include "Game/Physics/CollisionSolver.h"
-#include "Camera/Camera.h"
+#include "Game/Sprites/Enemy.h"
+
+DebugWindow::~DebugWindow()
+{
+	mPlayer = nullptr;
+	mCamera = nullptr;
+	mCameraValues = nullptr;
+	mEnemies = nullptr;
+}
 
 void DebugWindow::ImGuiDraw()
 {
@@ -15,4 +23,12 @@ void DebugWindow::ImGuiDraw()
 
 	if (mCameraValues)
 		CameraMovement::ImGuiDraw(*mCamera, mCameraValues);
+
+	if (mEnemies)
+	{
+		for (auto enemy : *mEnemies)
+		{
+			enemy->ImGuiDraw();
+		}
+	}
 }

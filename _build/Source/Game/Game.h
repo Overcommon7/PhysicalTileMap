@@ -13,12 +13,18 @@ public:
 
 	void Update() override;
 	void RaylibDraw() override;
+
+	void Restart();
+
 private:
 
 	void HandleHotkeys();
+	void RestartInternal();
 
+	bool mRestartQueried = false;
 	GameWindow* mGame;
 	DebugWindow* mDebug;
 	Project* mProject;
+	
 };
 

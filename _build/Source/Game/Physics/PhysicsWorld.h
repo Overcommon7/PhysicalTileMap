@@ -31,7 +31,7 @@ private:
 
 	std::function<Vector2Int(Vector2Int)> mScreenToGrid = {};
 	std::function<Vector2Int(Vector2Int)> mGridToScreen = {};
-	Action<const float> mFixedTimeStepCalls{ false };
+	Action<const float> mFixedTimeStepCalls{ true };
 
 
 	void InternalUpdate();

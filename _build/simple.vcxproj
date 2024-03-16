@@ -105,6 +105,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Game\Sprites\Enemy.cpp" />
     <ClCompile Include="Source\Game\Camera\CameraMovement.cpp" />
     <ClCompile Include="Source\Editor\Windows\SaveAsModal.cpp" />
     <ClCompile Include="Source\Game\Windows\DebugWindow.cpp" />
@@ -139,6 +140,7 @@
     <ClCompile Include="Source\Game\Sprites\Sprite.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Game\Sprites\Enemy.h" />
     <ClInclude Include="Source\Game\Camera\CameraMovement.h" />
     <ClInclude Include="Source\Editor\Windows\SaveAsModal.h" />
     <ClInclude Include="Source\Game\Windows\DebugWindow.h" />

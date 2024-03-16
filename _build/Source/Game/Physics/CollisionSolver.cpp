@@ -25,16 +25,22 @@ void CollisionSolver::RigidbodyTilemapCollision(Rigidbody* rigidbody, Project* p
     auto c(rigidbody->mSprite->Collider());
     Vector2Int offset = project->GetTileSize() - Vector2Int(c.width, c.height);
 
-    {
+    {      
         auto collider = rigidbody->mSprite->Collider();
-        Vector2Int corner = screenToGrid({ collider.x + (collider.width * 0.5f), collider.y + collider.height });
+        Vector2Int corner = screenToGrid({ collider.x + 1, collider.y + collider.height });
         SolveSide(SolveBottomCollision, rigidbody, project, corner, offset, gridToScreen, stopX, stopY);
+        if (!stopY)
+        {
+            auto collider = rigidbody->mSprite->Collider();
+            Vector2Int corner = screenToGrid({ collider.x + collider.width - 1, collider.y + collider.height });
+            SolveSide(SolveBottomCollision, rigidbody, project, corner, offset, gridToScreen, stopX, stopY);
+        } 
     }   
 
     {
         auto collider = rigidbody->mSprite->Collider();
         Vector2Int corner = screenToGrid({ collider.x + (collider.width * 0.5f), collider.y });
-        SolveSide(SolveTopCollision, rigidbody, project, corner, offset, gridToScreen, stopX, stopY);
+        SolveSide(SolveTopCollision, rigidbody, project, corner, offset, gridToScreen, stopX, stopY); 
     }
 
     {

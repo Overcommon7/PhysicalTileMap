@@ -6,7 +6,8 @@
 
 #include "Game/Physics/PhysicsWorld.h"
 #include "Game/Camera/CameraMovement.h"
-#include "Game/Physics/PhysicsWorld.h"
+#include "Game/Sprites/Enemy.h"
+#include "ImGuiUtilities/ImGuiUtils.h"
 
 
 #include "App/App.h"
@@ -39,6 +40,14 @@ void GameWindow::Stop()
 
 	delete mPlayer;
 	mPlayer = nullptr;
+
+	for (auto& enemy : mEnemies)
+	{
+		delete enemy;
+		enemy = nullptr;
+	}
+
+	mEnemies.clear();
 }
 
 void GameWindow::Update()
@@ -56,7 +65,7 @@ void GameWindow::RaylibDraw()
 		return this->GridToScreen(gridPosition);
 		};
 
-	mProject->Draw(ScreenToGrid(mStart), ScreenToGrid(mEnd), GridToScreen);
+	mProject->Draw(ScreenToGrid(mStart), ScreenToGrid(mEnd), GridToScreen, Project::DrawMode::Game);
 	mPlayer->Draw();
 
 	PhysicsWorld::DebugDraw();
@@ -68,6 +77,7 @@ void GameWindow::ImGuiDraw()
 	{
 		DrawFileMenu();
 		DrawEditMenu();
+		DrawEnemySpawnMenu();
 		DrawDebugMenu();
 			
 		ImGui::EndMenuBar();
@@ -105,8 +115,25 @@ void GameWindow::DrawDebugMenu()
 {
 	if (ImGui::BeginMenu("Debug"))
 	{
+		ITextureWindow::DrawDebugMenuItems();
 		ImGui::EndMenu();
 	}
+}
+
+void GameWindow::DrawEnemySpawnMenu()
+{
+	if (ImGui::BeginMenu("Enemies"))
+	{
+		ImGuiUtils::SerializeInt2("Grid Spawn Position", mSpawnValues.spawnPosition);
+		if (ImGui::Button("Spawn"))
+		{
+			mEnemies.emplace_back(new Enemy(Sprite::Type::Other, GridToScreen(mSpawnValues.spawnPosition), Vector2(35, 35), RED))->SetName(std::format("Enemy:{}", mEnemies.size()));
+		}
+
+		ImGui::EndMenu();
+	}
+
+	
 }
 
 Vector2Int GameWindow::ScreenToGrid(Vector2Int screenPosition) const

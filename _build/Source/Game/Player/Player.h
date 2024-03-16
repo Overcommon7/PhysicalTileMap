@@ -19,6 +19,8 @@ public:
 
 	const Controls& GetControls() const { return mControls; }
 private:
+
+	void FixedUpdate(float timeStep);
 	struct Debug
 	{
 		bool useInputs = true;

@@ -23,7 +23,7 @@ const TileData& TileSelector::GetSelectedTileData() const
 void TileSelector::SelectNewTile(const TileData& data)
 {
 	auto it = std::find_if(mFileData.begin(), mFileData.end(), [&data](const FileData* fData) {
-		return fData->mHash == data.pathHash;
+		return fData->mHash == data.mPathHash;
 		});
 
 	if (it == mFileData.end())
@@ -140,20 +140,20 @@ void TileSelector::DrawMiniTile()
 {
 	const auto position(this->GetMousePosition());
 	const auto tileSize(mProject->GetTileSize());
-	const auto texturePosition = mCurrentTile.imagePosition * tileSize;
+	const auto texturePosition = mCurrentTile.mImagePosition * tileSize;
 
 	const Rectangle source(texturePosition.x, texturePosition.y, tileSize.x, tileSize.y);
 	const Rectangle dest(position.x - 15.f, position.y - 15.f, 25.f, 25.f);
 	const Vector2 origin = { 0.0f, 0.0f };
 
-	DrawTexturePro(mTexture, source, dest, origin, 0.f, mCurrentTile.tint);
+	DrawTexturePro(mTexture, source, dest, origin, 0.f, mCurrentTile.mTint);
 }
 
 void TileSelector::SelectNewFileData(const FileData* data)
 {
-	mCurrentTile.pathHash = data->mHash;
-	mCurrentTile.imagePosition = Vector2Int();
-	mCurrentTile.tint = WHITE;
+	mCurrentTile.mPathHash = data->mHash;
+	mCurrentTile.mImagePosition = Vector2Int();
+	mCurrentTile.mTint = WHITE;
 
 	mTexture = data->mTexture;
 	mNewDataSelected = true;
@@ -163,8 +163,8 @@ void TileSelector::SelectNewFileData(const FileData* data)
 
 void TileSelector::SelectNewTileData(Vector2Int imagePosition)
 {
-	mCurrentTile.tint = WHITE;
-	mCurrentTile.imagePosition = imagePosition;
+	mCurrentTile.mTint = WHITE;
+	mCurrentTile.mImagePosition = imagePosition;
 	OnDataChanged.Invoke(mCurrentTile);
 }
 
@@ -179,7 +179,7 @@ void TileSelector::DrawTabs()
 	{
 		if (mNewTileSelected)
 		{
-			bool isOpen = data->mHash == mCurrentTile.pathHash;
+			bool isOpen = data->mHash == mCurrentTile.mPathHash;
 			if (!ImGui::BeginTabItem(data->mName.c_str(), &isOpen))
 				continue;
 			
@@ -190,7 +190,7 @@ void TileSelector::DrawTabs()
 		{
 			if (!ImGui::BeginTabItem(data->mName.c_str())) continue;
 
-			if (data->mHash != mCurrentTile.pathHash)
+			if (data->mHash != mCurrentTile.mPathHash)
 			{
 				SelectNewFileData(data);
 			}

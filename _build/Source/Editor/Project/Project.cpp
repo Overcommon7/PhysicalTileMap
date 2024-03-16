@@ -17,7 +17,7 @@ void Project::RemoveTile(Vector2Int position)
 	mTiles.erase(position);
 }
 
-void Project::Draw(Vector2Int begin, Vector2Int end, const std::function<Vector2Int(Vector2Int)>& gridToScreen)
+void Project::Draw(Vector2Int begin, Vector2Int end, const std::function<Vector2Int(Vector2Int)>& gridToScreen, DrawMode mode)
 {
 	const auto endIter = mTiles.end();
 
@@ -32,9 +32,11 @@ void Project::Draw(Vector2Int begin, Vector2Int end, const std::function<Vector2
 
 			const TileData& tileData = iter->second.GetData();
 			position = gridToScreen(position);
-			const auto& data = mFileData.at(tileData.pathHash);
-			Rectangle source(tileData.imagePosition.x * mTileSize.x, tileData.imagePosition.y * mTileSize.y, mTileSize.x, mTileSize.y);
-			DrawTextureRec(data.mTexture, source, position, tileData.tint);
+			const auto& data = mFileData.at(tileData.mPathHash);
+			Rectangle source(tileData.mImagePosition.x * mTileSize.x, tileData.mImagePosition.y * mTileSize.y, mTileSize.x, mTileSize.y);
+			DrawTextureRec(data.mTexture, source, position, tileData.mTint);
+			if (tileData.mIsDeath)
+				DrawRectangle(position.x, position.y, mTileSize.x, mTileSize.y, { 230, 41, 55, 100 });
 		}
 	}
 }
@@ -76,6 +78,11 @@ Project::Project(const fs::path& projectFile)
 	}
 }
 
+Project::~Project()
+{
+
+}
+
 
 void Project::Save()
 {
@@ -93,7 +100,7 @@ void Project::SaveAs(const fs::path& path)
 		data.insert({ hash, {} });
 
 	for (auto& [gridPosition, tile] : mTiles)
-		data.at(tile.GetData().pathHash).push_back(tile.GetSaveString(gridPosition));
+		data.at(tile.GetData().mPathHash).push_back(tile.GetSaveString(gridPosition));
 
 	ofstream inFile(path);
 
@@ -142,14 +149,20 @@ void Project::LoadTilesFromFile(size_t hashValue, fstream& inFile)
 		Vector2Int gridPosition = StringToVector(line);
 
 		Color color = WHITE;
-		if (std::getline(ss, line) && !line.empty())
+		if (std::getline(ss, line, '|') && !line.empty())
 		{
 			int value = stoi(line);
 			color = IntToColor(value);
 		}
-			
 		
-		mTiles.insert({ gridPosition, Tile(TileData(imagePosition, hashValue, color)) });
+		bool isDeath = false;
+		if (std::getline(ss, line, '|') && !line.empty())
+		{
+			isDeath = line.find('1') != string::npos;
+		}
+
+		
+		mTiles.insert({ gridPosition, Tile(TileData(imagePosition, hashValue, color, isDeath)) });
 	}
 }
 

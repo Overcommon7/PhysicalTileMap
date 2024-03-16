@@ -36,11 +36,16 @@ void Game::OnStart(Project* project)
 	mDebug->SetPlayer(mGame->GetPlayer());
 	mDebug->SetCameraValues(mGame->GetCameraValues());
 	mDebug->SetCamera(&mGame->GetCamera());
+	mDebug->SetEnemiesVector(mGame->GetEnemies());
 }
 
 void Game::Stop()
 {
 	mDebug->SetPlayer(nullptr);
+	mDebug->SetCameraValues(nullptr);
+	mDebug->SetCamera(nullptr);
+	mDebug->SetEnemiesVector(nullptr);
+
 	mGame->Stop();
 	mProject = nullptr;
 
@@ -57,6 +62,24 @@ void Game::RaylibDraw()
 {
 	ILayer::RaylibDraw();
 	HandleHotkeys();
+
+	if (mRestartQueried)
+	{
+		mRestartQueried = false;
+		RestartInternal();
+	}
+}
+
+void Game::Restart()
+{
+	mRestartQueried = true;
+}
+
+void Game::RestartInternal()
+{
+	Project* project = mProject;
+	Stop();
+	OnStart(project);
 }
 
 void Game::HandleHotkeys()
@@ -72,9 +95,7 @@ void Game::HandleHotkeys()
 
 	if (IsKeyPressed(KEY_R))
 	{
-		Project* project = mProject;
-		Stop();
-		OnStart(project);
+		RestartInternal();
 	}
 
 }
