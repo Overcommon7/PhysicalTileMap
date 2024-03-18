@@ -11,10 +11,6 @@ struct Movement
 	};
 	struct Values
 	{
-		struct Debug
-		{
-			bool applyForce = true;
-		};
 
 		float maxWalkingSpeed = 500;
 		float maxRunningSpeed = 500;
@@ -26,15 +22,17 @@ struct Movement
 		float initialJumpForce = 600;
 		float maintainedJumpForce = 50;
 		float maxAirTime = 0.45f;
-		
+		float maxHeightBoost = 0.2f;
 
+		
+		
+		float jumpHeightBoost = 0.f;
 		float timeOfJump = 0.f; 
 		bool canStartJump = false;
 		bool isJumpActive = false;
 
 		Direction facing = Direction::Right;
 		Direction moving = Direction::None;
-		Debug mDebug;
 
 		Values() = default;
 		Values(const fs::path& path);

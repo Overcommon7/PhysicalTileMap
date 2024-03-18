@@ -99,6 +99,13 @@ void Movement::ValidateJump(Player* player, Values& values)
 	Controls& controls = player->mControls;
 	Rigidbody& rigidbody = player->mRigidbody;
 
+	auto InverseLerp = [](float a, float b, float v) -> float
+		{
+			if (a == b)
+				return 0.0f;
+			return (v - a) / (b - a);
+		};
+
 	if (rigidbody.IsGrounded() && !controls.mIsHoldingJump)
 	{
 		values.canStartJump = true;
@@ -112,6 +119,16 @@ void Movement::ValidateJump(Player* player, Values& values)
 	if (values.canStartJump && controls.mThisFrame.jumpPressed)
 	{
 		values.timeOfJump = Time::Now();
+		if (rigidbody.GetVelocity().x <= values.maxWalkingSpeed)
+		{
+			values.jumpHeightBoost = 1.f;
+		}
+		else
+		{
+			values.jumpHeightBoost = InverseLerp(values.maxWalkingSpeed, values.maxRunningSpeed, rigidbody.GetVelocity().x);
+			values.jumpHeightBoost *= values.maxHeightBoost;
+			values.jumpHeightBoost += 1.f;
+		}
 	}
 
 	if (!rigidbody.IsGrounded())
@@ -135,7 +152,7 @@ void Movement::DoJump(Player* player, Values& values, float fixedTimeStep)
 
 	if (!values.isJumpActive)
 	{
-		rigidbody.ApplyForceY(-values.initialJumpForce);
+		rigidbody.ApplyForceY(-values.initialJumpForce * values.jumpHeightBoost);
 		values.isJumpActive = true;
 	}
 	else
@@ -160,10 +177,11 @@ void Movement::ImGuiDraw(Values& values)
 	ImGuiUtils::SerializeFloat("Initial Jump Force", values.initialJumpForce, 0.1f);
 	ImGuiUtils::SerializeFloat("Maitained Jump Force", values.maintainedJumpForce, 0.1f);
 	ImGuiUtils::SerializeFloat("Air Time", values.maxAirTime, 0.1f);
-	ImGuiUtils::SerializeBool("Apply Maintained Jump Force", values.mDebug.applyForce);
+	ImGui::DragFloat("Max Height Jump Boost", &values.maxHeightBoost, 0.05f, 0.0f, 1.0f);
 	
 	ImGuiUtils::DrawBool("Can Jump", values.canStartJump);
 	ImGuiUtils::DrawBool("Is Jump Active", values.isJumpActive);
+	ImGuiUtils::DrawFloat("Jump Boost Height", values.jumpHeightBoost);
 	ImGuiUtils::DrawFloat("Time Of Jump", values.timeOfJump);
 	if (values.isJumpActive)
 		ImGuiUtils::DrawFloat("Air Time", Time::Now() - values.timeOfJump);
@@ -194,7 +212,8 @@ Movement::Values::Values(const fs::path& path)
 	inFile >> passiveDecclerationSpeed;
 	inFile >> initialJumpForce;
 	inFile >> maintainedJumpForce;
-	inFile >> maxAirTime;	
+	inFile >> maxAirTime;
+	inFile >> maxHeightBoost;
 }
 
 void Movement::Values::SaveToFile()
@@ -214,6 +233,7 @@ void Movement::Values::SaveToFile()
 	inFile << initialJumpForce << '\n';
 	inFile << maintainedJumpForce << '\n';
 	inFile << maxAirTime << '\n';
+	inFile << maxHeightBoost;
 
 	inFile.close();
 

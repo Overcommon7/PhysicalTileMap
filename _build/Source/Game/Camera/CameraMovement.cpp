@@ -64,9 +64,9 @@ void CameraMovement::ImGuiDraw(Render::Camera& camera, Values* values)
 	if (values->mMovementType == Type::PlayerPush || 
 		(values->mMovementType == Type::UpdateOnLand && values->mOnLand.moveType == HorizantalMoveType::Bounds))
 	{
-		ImGui::DragFloat("X Threshold", &values->mPush.xMoveThreshold, 0.005f, 0.01f, 0.49f);
+		ImGui::DragFloat("X Threshold", &values->mPush.xMoveThreshold, 0.005f, 0.49f, 0.95f);
 		if (values->mMovementType == Type::PlayerPush)
-			ImGui::DragFloat("Y Threshold", &values->mPush.yMoveThreshold, 0.005f, 0.01f, 0.49f);
+			ImGui::DragFloat("Y Threshold", &values->mPush.yMoveThreshold, 0.005f, 0.49f, 0.95f);
 
 		ImGuiUtils::DrawVector2("Relative Position", values->mRelativePosition);
 		ImGuiUtils::DrawVector2("Min", values->mPush.min);
@@ -107,8 +107,9 @@ void CameraMovement::Smooth(Render::Camera& camera, Values& values, const Player
 
 	if (length > values.mSmooth.minEffectDistance)
 	{
-		float speed = fmaxf(values.mSmooth.distanceEffector * length, values.mSmooth.minSpeed);
-		rCamera.target = Vector2Add(rCamera.target, Vector2Scale(offset, speed * timeStep / length));
+		float speed = std::max(values.mSmooth.distanceEffector * length, values.mSmooth.minSpeed);
+		Vector2 movement = Vector2Scale(offset, speed * timeStep / length);
+		rCamera.target = Vector2Add(rCamera.target, movement);
 	}
 }
 
