@@ -125,11 +125,18 @@ void GameWindow::DrawEnemySpawnMenu()
 	if (ImGui::BeginMenu("Enemies"))
 	{
 		ImGuiUtils::SerializeInt2("Grid Spawn Position", mSpawnValues.spawnPosition);
+		ImGuiUtils::SerializeInt("Amount", mSpawnValues.spawnAmount);
 		if (ImGui::Button("Spawn"))
 		{
-			mEnemies.emplace_back(new Enemy(Sprite::Type::Other, GridToScreen(mSpawnValues.spawnPosition), Vector2(35, 35), RED))->SetName(std::format("Enemy:{}", mEnemies.size()));
+			for (int i = 0; i < mSpawnValues.spawnAmount; ++i)
+			{
+				mEnemies.emplace_back(
+					new Enemy(
+						Sprite::Type::Other, GridToScreen(mSpawnValues.spawnPosition),
+						Vector2(35, 35), RED))
+					->SetName(std::format("Enemy:{}", mEnemies.size()));
+			}				
 		}
-
 		ImGui::EndMenu();
 	}
 

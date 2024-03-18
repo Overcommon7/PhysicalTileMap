@@ -32,6 +32,7 @@ void ITextureWindow::ImGuiDraw()
 void ITextureWindow::DrawDebugMenuItems()
 {
 	Vector2Int mousePosition(::GetMousePosition());
+	ImGui::Text("FPS %i", GetFPS());
 	ImGui::Text("Mouse Position: %i, %i", mousePosition.x, mousePosition.y);
 	ImGui::Text("Local Mouse Position: %i, %i", mLocalMousePosition.x, mLocalMousePosition.y);
 	ImGui::Text("Is Within Texture: %s", IsInsideTexture(mousePosition) ? "true" : "false");

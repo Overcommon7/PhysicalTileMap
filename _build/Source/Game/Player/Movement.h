@@ -12,15 +12,15 @@ struct Movement
 	struct Values
 	{
 
-		float maxWalkingSpeed = 500;
-		float maxRunningSpeed = 500;
-		float walkingAcclerationSpeed = 50;
-		float runningAcclerationSpeed = 75;
-		float walkingDecclerationSpeed = 450;
-		float runningDecclerationSpeed = 650;
-		float passiveDecclerationSpeed = 375;
-		float initialJumpForce = 600;
-		float maintainedJumpForce = 50;
+		float maxWalkingSpeed = 325;
+		float maxRunningSpeed = 450;
+		float walkingAcclerationSpeed = 15;
+		float runningAcclerationSpeed = 35;
+		float walkingDecclerationSpeed = 935;
+		float runningDecclerationSpeed = 1350;
+		float passiveDecclerationSpeed = 750;
+		float initialJumpForce = 350;
+		float maintainedJumpForce = 45;
 		float maxAirTime = 0.45f;
 		float maxHeightBoost = 0.2f;
 

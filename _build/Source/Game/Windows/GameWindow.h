@@ -10,7 +10,8 @@ class GameWindow : public ITextureWindow
 {
 	struct EnemySpawnValues
 	{
-		Vector2Int spawnPosition;
+		Vector2Int spawnPosition{};
+		int spawnAmount{};
 	};
 public:
 	ITextureWindowConstructorHeader(GameWindow);
