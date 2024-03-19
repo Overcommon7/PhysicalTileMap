@@ -21,6 +21,13 @@ Rigidbody::Rigidbody(Sprite* sprite, size_t layer, bool useGravity, bool isTrigg
 	, mCollideWithTilemap(true)
 	, mIsTrigger(isTrigger)
 {
+	for (int i = 0; i <= (int)CollisionEdge::Left; ++i)
+	{
+		auto edge = (CollisionEdge)i;
+		mCollidedTiles.insert({ edge, {} });
+	}
+		
+
 	PhysicsWorld::AddRigidbody(this);
 	assert(sprite != nullptr);
 }
@@ -77,6 +84,11 @@ Sprite* Rigidbody::GetSprite()
 const Sprite* Rigidbody::GetSprite() const
 {
 	return mSprite;
+}
+
+const vector<TileData>& Rigidbody::GetTileData(CollisionEdge edge) const
+{
+	return mCollidedTiles.at(edge);
 }
 
 void Rigidbody::ImGuiDraw()

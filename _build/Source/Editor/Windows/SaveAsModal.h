@@ -10,10 +10,8 @@ public:
 	void ImGuiDrawEnd() override;
 	void ImGuiDraw() override;
 
-	void Open() { mIsClosed = false; }
-	void Close() { mIsClosed = true; }
-
 	bool ShouldSave() const { return mShouldSave; }
+	void Saved() { mShouldSave = false; }
 	fs::path GetSavePath() const { return fs::path(mSavePath); }
 private:
 	string mSavePath;

@@ -42,6 +42,7 @@ private:
 	void DrawEditMenu();
 	void DrawMiniTile();
 	void DrawPlayerMenu();
+	void DrawTileEditMenu();
 
 
 	Vector2Int ScreenToGrid(Vector2Int screenPosition, bool isTexturePosition = false);
@@ -62,6 +63,7 @@ private:
 	{
 		EyeDropper eyeDropper;
 		Selection selection;
+		TileData selectionTileData;
 	};
 
 	struct ImGuiValues

@@ -1,4 +1,4 @@
-#include "pch.h"
+ #include "pch.h"
 #include "SceneView.h"
 
 #include "../Project/Project.h"
@@ -59,6 +59,7 @@ void SceneView::ImGuiDraw()
 		mImGuiValues.isHoveringMenu = false;
 		DrawFileMenu();
 		DrawEditMenu();
+		DrawTileEditMenu();
 		DrawSettingsMenuItem();
 		DrawPlayerMenu();
 		DrawDebugMenuItem();
@@ -68,12 +69,16 @@ void SceneView::ImGuiDraw()
 	if (mProject == nullptr)
 		return;
 
-	UpdateCamera();
+	if (!ILayer::IsPopupOpen())
+	{
+		UpdateCamera();
 
-	if (!mImGuiValues.isHoveringMenu && !mEditorValues.eyeDropper.IsActive())
-		UpdateProject();
+		if (!mImGuiValues.isHoveringMenu && !mEditorValues.eyeDropper.IsActive())
+			UpdateProject();
 
-	UpdateInputs();
+		UpdateInputs();
+	}
+
 	Vector2Int gridPosition(ScreenToGrid(this->GetMousePosition(), true));
 	ImGui::Text("Mouse Grid Position: %i, %i", gridPosition.x, gridPosition.y);
 	ITextureWindow::ImGuiDraw();
@@ -216,6 +221,43 @@ void SceneView::DrawPlayerMenu()
 
 	ImGui::EndMenu();
 	
+}
+
+void SceneView::DrawTileEditMenu()
+{
+	if (!ImGui::BeginMenu("Tile Options"))
+		return;
+
+	if (mEditorValues.selection.HasSelection())
+	{
+		ImGuiUtils::SerializeColor("Tile Color", mEditorValues.selectionTileData.mTint);
+		ImGuiUtils::SerializeBool("Is Death Tile", mEditorValues.selectionTileData.mIsDeath);
+
+		const auto start(mEditorValues.selection.GetSelectionStart());
+		const auto end(mEditorValues.selection.GetSelectionEnd());
+
+		for (int y = start.y; y < end.y; ++y)
+		{
+			for (int x = start.x; x < end.x; ++x)
+			{
+				const Vector2Int pos(x, y);
+				auto tileData(mProject->GetTile(pos));
+				if (!tileData.has_value())
+					continue;
+				auto data(tileData.value());
+				data.mIsDeath = mEditorValues.selectionTileData.mIsDeath;
+				data.mTint = mEditorValues.selectionTileData.mTint;
+				mProject->SetTile(pos, data);
+			}
+		}
+	}
+	else
+	{
+		ImGuiUtils::SerializeColor("Tile Color", mCurrentTileData.mTint);
+		ImGuiUtils::SerializeBool("Is Death Tile", mCurrentTileData.mIsDeath);
+	}
+
+	ImGui::EndMenu();
 }
 
 void SceneView::DrawDebugMenuItem()

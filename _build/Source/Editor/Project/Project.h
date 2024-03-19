@@ -39,6 +39,7 @@ public:
 	vector<const FileData*> GetFileData() const;
 	Project(const fs::path& projectFile);
 	~Project();
+	
 	void Save();
 	void SaveAs(const fs::path& path);
 	void Clear() { mTiles.clear(); }
@@ -60,7 +61,7 @@ private:
 	Color IntToColor(int value);
 	Vector2Int StringToVector(const string& value);
 
-	
+	void Load();
 };
 
 

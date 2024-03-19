@@ -8,21 +8,29 @@
 
 Editor::Editor()
 {
-	mCurrentProject = std::make_unique<Project>("Projects/Test/Test.txt");
+	mCurrentProject = nullptr;
 
 	mSceneView = new SceneView("Scene View", { 1280, 720 });
 	mTileSelector = new TileSelector("Tile Selector", { 360, 720 });
-
-	mSceneView->SetProject(mCurrentProject.get());
-	mTileSelector->SetProject(mCurrentProject.get());
-
+	mSaveAsModal = new SaveAsModal();
+	mOpenProjectModal = new OpenProjectModal();
+	
 	mWindows.emplace_back(mSceneView);	
-	mWindows.emplace_back(mTileSelector);	
+	mWindows.emplace_back(mTileSelector);
+	mWindows.emplace_back(mSaveAsModal);
+	mWindows.emplace_back(mOpenProjectModal);
 
 	auto OnDataChanged = [this](TileData& tileData) {
 		mSceneView->SetNewTileData(tileData);
 		};
 
+	auto OnProjectOpened = [this](fs::path& path) {
+		mCurrentProject = std::make_unique<Project>(path);
+		mSceneView->SetProject(mCurrentProject.get());
+		mTileSelector->SetProject(mCurrentProject.get());
+		};
+
+	mOpenProjectModal->OnProjectOpened += OnProjectOpened;
 	mTileSelector->OnDataChanged += OnDataChanged;
 	mSceneView->SetTileSelector(mTileSelector);
 	mSceneView->SetNewTileData(mTileSelector->GetSelectedTileData());
@@ -63,26 +71,16 @@ void Editor::ImGuiDraw()
 {
 	ILayer::ImGuiDraw();
 
-	if (!mSaveAsModal) 
-		return;
-
-	mSaveAsModal->ImGuiDrawBegin();
-	mSaveAsModal->ImGuiDraw();
-	mSaveAsModal->ImGuiDrawEnd();
-
-	if (!mSaveAsModal->IsClosed())
-		return;
-
 	if (mSaveAsModal->ShouldSave())
-	{
-		mCurrentProject->SaveAs(mSaveAsModal->GetSavePath());
+	{		
+		auto savePath(mSaveAsModal->GetSavePath() / (mCurrentProject->GetSavePath().stem().string() + ".txt"));
+		mCurrentProject->SaveAs(savePath);
+		mSaveAsModal->Close();
+		mSaveAsModal->Saved();
 	}
-
-	mSaveAsModal.reset();
 }
 
 void Editor::OpenSaveAsModal()
 {
-	if (!mSaveAsModal)
-		mSaveAsModal = std::make_unique<SaveAsModal>();
+	mSaveAsModal->Open();
 }

@@ -158,6 +158,9 @@ void PhysicsWorld::ApplyForces()
 				continue;
 
 			rigidbody->mCollisions.clear();
+			for (auto& [edge, data] : rigidbody->mCollidedTiles)
+				data.clear();
+
 			CalculateRigidbodyFrame(rigidbody);
 		}	
 	}

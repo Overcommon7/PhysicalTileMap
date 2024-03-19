@@ -8,48 +8,51 @@ SaveAsModal::SaveAsModal()
 	, mShouldSave(false)
 {
 	mIsClosable = true;
-	mIsClosed = true;
+	mIsOpen = false;
+	mIsPopup = true;
 }
 
 void SaveAsModal::ImGuiDrawBegin()
 {
-	ImGui::BeginPopup(mTtitle.c_str());
+	if (mIsOpen)
+		ImGui::OpenPopup(mTitle.c_str());
 }
 
 void SaveAsModal::ImGuiDrawEnd()
 {
-	ImGui::EndPopup();
+	
 }
 
 void SaveAsModal::ImGuiDraw()
 {
-	if (mIsClosed)
+	mShouldSave = false;
+	if (!mIsOpen)
 		return;
-
-	if (!ImGui::BeginPopupModal(mTtitle.c_str(), &mIsClosed))
-		return;
-
-	ImGuiUtils::SerializeString("Folder", mSavePath);
-
-	ImGui::SameLine();
-	if (fs::exists(mSavePath) && fs::is_directory(mSavePath))
+		
+	if (ImGui::BeginPopupModal(mTitle.c_str(), &mIsOpen, ImGuiWindowFlags_AlwaysAutoResize))
 	{
-		if (ImGui::Button("Save"))
+		ImGuiUtils::SerializeString("Folder", mSavePath);
+
+		if (fs::exists(mSavePath) && fs::is_directory(mSavePath))
 		{
-			mShouldSave = true;
-			mIsClosed = true;
+			if (ImGui::Button("Save"))
+			{
+				mShouldSave = true;
+				Close();
+				ImGui::CloseCurrentPopup();
+			}
+		}
+		else
+		{
+			ImGui::TextDisabled("Save");
+		}
+
+		if (ImGui::Button("Cancel"))
+		{
+			Close();
 			ImGui::CloseCurrentPopup();
 		}
-	}
-	else
-	{
-		ImGui::TextDisabled("Save");
-	}
 
-	if (ImGui::Button("Cancel"))
-	{
-		mShouldSave = false;
-		mIsClosed = true;
+		ImGui::EndPopup();
 	}
-
 }

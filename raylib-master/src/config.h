@@ -244,7 +244,12 @@
 #define SUPPORT_STANDARD_FILEIO         1
 // Show TRACELOG() output messages
 // NOTE: By default LOG_DEBUG traces not shown
-#define SUPPORT_TRACELOG                1
+#if defined NDEBUG
+#define SUPPORT_TRACELOG 0
+#else
+#define SUPPORT_TRACELOG 1
+#endif
+ 
 //#define SUPPORT_TRACELOG_DEBUG          1
 
 // utils: Configuration values

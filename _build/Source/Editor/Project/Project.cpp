@@ -35,7 +35,7 @@ void Project::Draw(Vector2Int begin, Vector2Int end, const std::function<Vector2
 			const auto& data = mFileData.at(tileData.mPathHash);
 			Rectangle source(tileData.mImagePosition.x * mTileSize.x, tileData.mImagePosition.y * mTileSize.y, mTileSize.x, mTileSize.y);
 			DrawTextureRec(data.mTexture, source, position, tileData.mTint);
-			if (tileData.mIsDeath)
+			if (tileData.mIsDeath && mode == DrawMode::Editor)
 				DrawRectangle(position.x, position.y, mTileSize.x, mTileSize.y, { 230, 41, 55, 100 });
 		}
 	}
@@ -54,7 +54,12 @@ Project::Project(const fs::path& projectFile)
 	: mProjectFile(projectFile)
 	, mIsSaved(true)
 {
-	fstream inFile(projectFile);
+	Load();
+}
+
+void Project::Load()
+{
+	fstream inFile(mProjectFile);
 	string line;
 	if (!inFile.is_open())
 		return;
@@ -91,8 +96,11 @@ void Project::Save()
 
 void Project::SaveAs(const fs::path& path)
 {
-	if (!fs::remove(path))
-		return;
+	fs::remove(path);
+
+	bool newLocation = path != mProjectFile;
+	fs::path newDir = std::filesystem::absolute(path).parent_path();
+	
 
 	unordered_map<size_t, vector<string>> data;
 
@@ -109,7 +117,19 @@ void Project::SaveAs(const fs::path& path)
 
 	for (const auto& [pathHash, tileData] : data)
 	{
-		inFile << "Path:" << mFileData.at(pathHash).mFilepath.string() << '\n';
+		if (newLocation)
+		{
+			const auto& from(mFileData.at(pathHash).mFilepath);
+			const auto dest(newDir / (from.stem().string() + from.extension().string()));
+			inFile << "Path:" << dest.string() << '\n';
+			if (!fs::exists(dest))
+				fs::copy_file(from, dest);
+		}
+		else
+		{
+			inFile << "Path:" << fs::absolute(mFileData.at(pathHash).mFilepath).string() << '\n';
+		}
+		
 		for (const auto& str : tileData)
 			inFile << str << '\n';
 		inFile << "--End\n";
@@ -118,8 +138,19 @@ void Project::SaveAs(const fs::path& path)
 	inFile.close();
 	mIsSaved = true;
 	mProjectFile = path;
+	if (mProjectFile.extension() != ".otp")
+	{
+		fs::path old(mProjectFile);
+		fs::rename(old, mProjectFile.replace_extension(".otp"));
+	}
+	
 
 	SetWindowTitle(GetWindowTitle().c_str());
+
+	if (newLocation)
+	{
+		Load();
+	}
 }
 
 std::optional<TileData> Project::GetTile(Vector2Int gridPosition) const

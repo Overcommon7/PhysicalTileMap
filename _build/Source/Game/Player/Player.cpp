@@ -55,6 +55,13 @@ void Player::FixedUpdate(float timeStep)
 	if (mDebug.useInputs)
 		Movement::FixedUpdate(this, mMovementValues, timeStep);
 
+	CheckForEnemyCollision();
+	CheckForTileCollision();
+	
+}
+
+void Player::CheckForEnemyCollision()
+{
 	const auto& collisions = mRigidbody.GetCollisions();
 	if (collisions.empty()) return;
 
@@ -62,5 +69,20 @@ void Player::FixedUpdate(float timeStep)
 	if (it == collisions.end()) return;
 
 	App::GetGameLayer()->Restart();
-	
+}
+
+void Player::CheckForTileCollision()
+{
+	for (int i = 0; i <= (int)CollisionEdge::Left; ++i)
+	{
+		const auto& tileData = mRigidbody.GetTileData((CollisionEdge)i);
+		for (const auto& data : tileData)
+		{
+			if (!data.mIsDeath)
+				continue;
+
+			App::GetGameLayer()->Restart();
+			return;
+		}
+	}
 }

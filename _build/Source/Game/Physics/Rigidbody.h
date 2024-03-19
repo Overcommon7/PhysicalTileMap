@@ -1,4 +1,6 @@
 #pragma once
+#include "Editor/Project/Tile.h"
+
 class Sprite;
 class Rigidbody;
 
@@ -25,7 +27,7 @@ struct CopyValues
 
 enum class CollisionEdge
 {
-	Top,
+	Top = 0,
 	Bottom,
 	Right,
 	Left
@@ -69,6 +71,7 @@ public:
 	bool CollidesWithTilemap() { return mCollideWithTilemap; }
 
 	const vector<Collision>& GetCollisions() const { return mCollisions; }
+	const vector<TileData>& GetTileData(CollisionEdge edge) const;
 
 	void ImGuiDraw();
 private:
@@ -87,6 +90,7 @@ private:
 
 	vector<size_t> mLayerMask;
 	vector<Collision> mCollisions;
+	std::map<CollisionEdge, vector<TileData>> mCollidedTiles;
 
 
 	CopyValues Copy() const;

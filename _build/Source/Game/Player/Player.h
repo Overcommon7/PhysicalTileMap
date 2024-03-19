@@ -34,6 +34,9 @@ private:
 
 	std::function<void(const float)> mFixedUpdate;
 
+	void CheckForEnemyCollision();
+	void CheckForTileCollision();
+
 	friend struct Movement;
 };
 

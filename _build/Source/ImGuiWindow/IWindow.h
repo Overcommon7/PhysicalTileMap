@@ -16,19 +16,26 @@ public:
 	virtual void ImGuiDraw() = 0;
 	virtual void DrawDebugMenuItems();
 
-	bool IsClosed() const { return mIsClosed; }
+	virtual void Open();
+	virtual void Close();
+	virtual void SetClosable(bool closable) { mIsClosable = closable; }
+
+	bool IsOpen() const { return mIsOpen; }
+	bool IsClosable() const { return mIsClosable; }
 protected:
-	string mTtitle;
+	string mTitle;
 	string_view mDisplayTitle;
 	bool mIsClosable = false;
-	bool mIsClosed = false;
+	bool mIsOpen = true;
 	bool mHasMenuBar = false;
+	bool mIsPopup = false;
 	Vector2Int mWindowPosition;
 	Vector2Int mWindowSize;
 
 	IWindow(const string& windowTitle);
 private:
 	inline static std::map<string, int> sTitles = {};
+	bool mPopOpenSuccessful = false;
 };
 
 #define IWindowConstructor(className) className(const string& windowTitle) : IWindow(windowTitle)
