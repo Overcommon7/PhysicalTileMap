@@ -72,10 +72,11 @@ void Selection::Update(SceneView* const sceneView, const TileSelector* const til
 
 		if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
 		{
-			if (tileSelector->IsInsideTexture(tileSelector->GetMousePosition()))
+			Vector2 mousePosition(::GetMousePosition());
+			if (tileSelector->IsInsideTexture(mousePosition))
 				return;
 
-			if (sceneView->IsInsideTexture(sceneView->GetMousePosition()))
+			if (sceneView->IsInsideTexture(mousePosition))
 			{
 				if (CheckCollisionPointRec(sceneView->GetMousePosition(), GetSelectionScreenRec(sceneView->mGridToScreen)))
 				{

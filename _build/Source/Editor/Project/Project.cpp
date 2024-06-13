@@ -127,7 +127,7 @@ void Project::SaveAs(const fs::path& path)
 		}
 		else
 		{
-			inFile << "Path:" << fs::absolute(mFileData.at(pathHash).mFilepath).string() << '\n';
+			inFile << "Path:" << fs::relative(mFileData.at(pathHash).mFilepath).string() << '\n';
 		}
 		
 		for (const auto& str : tileData)

@@ -45,14 +45,14 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\_bin\Debug\</OutDir>
     <IntDir>obj\x64\Debug\simple\</IntDir>
-    <TargetName>simple</TargetName>
+    <TargetName>OverTiled</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\_bin\Release\</OutDir>
     <IntDir>obj\x64\Release\simple\</IntDir>
-    <TargetName>simple</TargetName>
+    <TargetName>OverTiled</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
